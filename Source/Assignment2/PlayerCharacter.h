@@ -16,7 +16,7 @@ public:
 	APlayerCharacter();
 
 protected:
-	// Called when the game starts or when spawned
+	// Called when the game starts or when actor is spawned
 	virtual void BeginPlay() override;
 
 public:	
@@ -26,16 +26,30 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	/**
+	* Interrupt / stop the attack animation if it is currently playing
+	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	void StopAttacking();
 
+	/**
+	* Query the player to see if the attack animation is playing
+	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	bool IsAttacking();
 
+	/**
+	* Causes the player mesh to ragdoll, the sword to drop and simulate physics and disables the movement component. RIP player :'(
+	*/
+	UFUNCTION(BlueprintImplementableEvent)
+	void Ragdoll();
+
 private:
 
-	// Listen to this sword's overlap events to deal damage to enemies.
-	UPROPERTY(EditAnywhere)
+	/**
+	* Listen to this sword's overlap events to deal damage to enemies.
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SwordMesh;
 
 };

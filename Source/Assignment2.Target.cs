@@ -8,7 +8,10 @@ public class Assignment2Target : TargetRules
 	public Assignment2Target(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.Add("Assignment2");
+
+		DefaultBuildSettings = BuildSettingsVersion.V4;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+
+        ExtraModuleNames.Add("Assignment2");
 	}
 }

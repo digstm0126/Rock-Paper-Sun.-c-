@@ -39,4 +39,22 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	/**
+	* Cause a single attack animation loop to play
+	*/
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartAttacking();
+
+	/**
+	* Interrupt / stop the attack animation if it is currently playing
+	*/
+	UFUNCTION(BlueprintImplementableEvent)
+	void StopAttacking();
+
+	/**
+	* Query the Enemy to see if the attack animation is playing
+	*/
+	UFUNCTION(BlueprintImplementableEvent)
+	bool IsAttacking();
 };

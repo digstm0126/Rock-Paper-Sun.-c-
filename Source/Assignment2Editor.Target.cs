@@ -8,7 +8,10 @@ public class Assignment2EditorTarget : TargetRules
 	public Assignment2EditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+
+		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        DefaultBuildSettings = BuildSettingsVersion.V4;
+
 		ExtraModuleNames.Add("Assignment2");
 	}
 }

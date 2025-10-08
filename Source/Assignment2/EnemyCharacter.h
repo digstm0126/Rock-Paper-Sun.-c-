@@ -57,4 +57,10 @@ public:
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	bool IsAttacking();
+
+	/**
+	* Causes the Enemy mesh to ragdoll :'(
+	*/
+	UFUNCTION(BlueprintImplementableEvent)
+	void Ragdoll();
 };

@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Assignment2GameMode.h"
-#include "PlayerCharacter.h"
+#include "Characters/PlayerCharacter.h"
 
 
 AAssignment2GameMode::AAssignment2GameMode()

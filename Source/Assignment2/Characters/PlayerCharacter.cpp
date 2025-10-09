@@ -2,10 +2,7 @@
 
 
 #include "PlayerCharacter.h"
-
-#include "Assignment2GameMode.h"
 #include "EnemyCharacter.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()

@@ -10,9 +10,9 @@ APlayerCharacter::APlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	
 	// Attach a sword mesh to the character mesh
-	SwordMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("SwordMesh"));
-	SwordMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("Hand_R"));
+	SetRightHeldItem(CreateDefaultSubobject<UStaticMeshComponent>(FName("SwordMesh")));
 }
 
 // Called when the game starts or when spawned
@@ -34,4 +34,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+void APlayerCharacter::SetRightHeldItem(UStaticMeshComponent* NewMesh)
+{
+
+	NewMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("Hand_R"));
+	RightHandItem = NewMesh;
+	
+}
+	
+
 

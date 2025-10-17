@@ -18,17 +18,19 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float WeaponsDamage = 5.0f;
-
-	//reference to weapon mesh
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* WeaponMesh;
-
+	
+ 
 	UPROPERTY(EditAnywhere)
 	AActor* User;
 
 	
+	TArray<UClass*> AttackableActors;
+	
+	bool InUses = false;
+	
 	void SetUser(AActor* NewUser);
 
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -36,11 +38,15 @@ protected:
 
 	void BindToWeapon();
 
-	//on overlap
-	void HandelHit();
+	//handles when current mesh hits something
+	UFUNCTION()
+	void HandelHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	//deals damage to input Actor 
 	void DealDamage(AActor* ActorToDamage);
+
+	//mesh of the weapon
+	UStaticMeshComponent* WeaponMesh;
 
 public:	
 	// Called every frame

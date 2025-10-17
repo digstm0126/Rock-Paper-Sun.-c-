@@ -19,6 +19,7 @@ protected:
 	// Called when the game starts or when actor is spawned
 	virtual void BeginPlay() override;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -44,12 +45,17 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void Ragdoll();
 
+	
+	void SetRightHeldItem(UStaticMeshComponent* NewMesh);
+
+	bool IsRightFull = false;
+
 private:
 
 	/**
 	* Listen to this sword's overlap events to deal damage to enemies.
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* SwordMesh;
+	UStaticMeshComponent* RightHandItem;
 
 };

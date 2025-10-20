@@ -2,7 +2,12 @@
 
 
 #include "PlayerCharacter.h"
+
+#include "Assignment2GameMode.h"
 #include "EnemyCharacter.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -11,8 +16,87 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	
-	// Attach a sword mesh to the character mesh
-	SetRightHeldItem(CreateDefaultSubobject<UStaticMeshComponent>(FName("SwordMesh")));
+	// set up item
+	SetUpItem();
+}
+
+void APlayerCharacter::SetUpItem()
+{
+	RightHandItem = CreateDefaultSubobject<UStaticMeshComponent>(FName("SwordMesh"));
+	if (!RightHandItem)
+	{
+		UE_LOG(LogCore, Error, TEXT("no mesh to bind to"))
+		return;
+	}
+	
+	SetRightHeldItem(RightHandItem);
+	RightHandItem->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::HandelHit);
+	
+}
+
+
+void APlayerCharacter::DoDamage(AEnemyCharacter* EnemyCharacter)
+{
+	FDamageEvent DamageEvent;
+	EnemyCharacter->TakeDamage(Damage, DamageEvent, GetController(), this);
+
+	// Get the game mode
+	if (AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this))
+	{
+		// Cast it to our specific game mode
+		if (AAssignment2GameMode* AssignmentGameMode = Cast<AAssignment2GameMode>(GameMode))
+		{
+			// Send a basic message
+			FStringFormatNamedArguments arg;
+			arg.Add(TEXT("DAMAGE"), Damage);
+			FString NewMessage( FString::Format(TEXT("Yes! I did {DAMAGE}"), arg));
+			AssignmentGameMode->SendCharacterMessage(NewMessage);
+		}
+	}
+	
+}
+
+void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
+                                 AActor* OtherActor,
+                                 UPrimitiveComponent* OtherComp,
+                                 int32 OtherBodyIndex,
+                                 bool bFromSweep,
+                                 const FHitResult& SweepResult)
+{
+	//check if bing used is atacking
+	if (!IsAttacking())
+	{
+		return;
+	}
+	
+	//check if not user
+	if (OtherActor == this)
+	{
+		return;
+	}
+
+	//checks if it's a Damageable Actor
+	if (OtherActor->CanBeDamaged())
+	{
+		//check Actor is one of the hit able classes
+		if (AttackableActors.Contains(OtherActor->GetClass()))
+		{
+			if (Cast<UCapsuleComponent>(OtherComp) == nullptr)
+			{
+				return;
+			}
+			UE_LOG(LogCore, Error, TEXT("can atack"));
+			AEnemyCharacter* EnemyCharacter = CastChecked<AEnemyCharacter>(OtherActor);
+			if (EnemyCharacter)
+			{
+				DoDamage(EnemyCharacter);
+				StopAttacking();
+			}
+		}
+	}
+	
+	//check if stagarable thing
+	
 }
 
 // Called when the game starts or when spawned

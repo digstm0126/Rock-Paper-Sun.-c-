@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemyCharacter.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
@@ -18,7 +19,6 @@ public:
 protected:
 	// Called when the game starts or when actor is spawned
 	virtual void BeginPlay() override;
-
 
 public:	
 	// Called every frame
@@ -44,12 +44,22 @@ public:
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	void Ragdoll();
-
 	
 	void SetRightHeldItem(UStaticMeshComponent* NewMesh);
 
-	bool IsRightFull = false;
+	void SetUpItem();
+	void DoDamage(AEnemyCharacter* EnemyCharacter);
 
+	float Damage = 1.0f;
+
+	UFUNCTION()
+	void HandelHit(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere)
+	TArray<UClass*> AttackableActors;
+	
 private:
 
 	/**

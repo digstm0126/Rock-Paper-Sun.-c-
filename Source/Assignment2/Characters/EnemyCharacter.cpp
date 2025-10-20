@@ -40,6 +40,7 @@ void AEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+
 // Called every frame
 void AEnemyCharacter::Tick(float DeltaTime)
 {

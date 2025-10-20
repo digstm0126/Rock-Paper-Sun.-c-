@@ -2,6 +2,8 @@
 
 
 #include "EnemyCharacter.h"
+
+#include "Component/HealthManagerComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -38,6 +40,20 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	if (HealthManger)
+	{
+		HealthManger->ReduceHealth(DamageAmount);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HealthManger is null"));
+	}
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 

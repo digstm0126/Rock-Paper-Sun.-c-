@@ -33,6 +33,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere)
+	UHealthManagerComponent* HealthManger;
+	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

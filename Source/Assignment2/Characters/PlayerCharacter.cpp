@@ -40,6 +40,7 @@ void APlayerCharacter::DoDamage(AEnemyCharacter* EnemyCharacter)
 {
 	FDamageEvent DamageEvent;
 	EnemyCharacter->TakeDamage(Damage, DamageEvent, GetController(), this);
+	UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, RightHandItem, NAME_None, FVector3d(0,0,0), FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
 
 	// Get the game mode
 	if (AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this))
@@ -91,8 +92,7 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 			AEnemyCharacter* EnemyCharacter = CastChecked<AEnemyCharacter>(OtherActor);
 			if (EnemyCharacter)
 			{
-				//FRotator::ZeroRotator, EAttachLocation::KeepWorldPosition, bAutoDestroy, bAutoActivate, PoolingMethod, bPreCullCheck
-				UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, RightHandItem, NAME_None, sw, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
+				UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, Capsule, NAME_None, FVector3d(0,0,100), FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
 				DoDamage(EnemyCharacter);
 				StopAttacking();
 			}

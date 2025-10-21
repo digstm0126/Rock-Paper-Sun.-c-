@@ -5,6 +5,7 @@
 
 #include "Assignment2GameMode.h"
 #include "EnemyCharacter.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
@@ -81,7 +82,8 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 		//check Actor is one of the hit able classes
 		if (AttackableActors.Contains(OtherActor->GetClass()))
 		{
-			if (Cast<UCapsuleComponent>(OtherComp) == nullptr)
+			UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp);
+			if (Capsule == nullptr)
 			{
 				return;
 			}
@@ -89,6 +91,8 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 			AEnemyCharacter* EnemyCharacter = CastChecked<AEnemyCharacter>(OtherActor);
 			if (EnemyCharacter)
 			{
+				//FRotator::ZeroRotator, EAttachLocation::KeepWorldPosition, bAutoDestroy, bAutoActivate, PoolingMethod, bPreCullCheck
+				UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, RightHandItem, NAME_None, sw, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
 				DoDamage(EnemyCharacter);
 				StopAttacking();
 			}
@@ -109,7 +113,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input

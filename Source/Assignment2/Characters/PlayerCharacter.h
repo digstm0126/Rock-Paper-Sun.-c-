@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EnemyCharacter.h"
+#include "NiagaraSystem.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
@@ -50,8 +51,12 @@ public:
 	void SetUpItem();
 	void DoDamage(AEnemyCharacter* EnemyCharacter);
 
+	UPROPERTY(EditAnywhere)
 	float Damage = 1.0f;
 
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* Blood;
+	
 	UFUNCTION()
 	void HandelHit(UPrimitiveComponent* OverlappedComponent,
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,

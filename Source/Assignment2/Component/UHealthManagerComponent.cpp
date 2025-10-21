@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Component/HealthManagerComponent.h"
+#include "UHealthManagerComponent.h"
 
 // Sets default values for this component's properties
 UHealthManagerComponent::UHealthManagerComponent()
@@ -16,6 +16,11 @@ UHealthManagerComponent::UHealthManagerComponent()
 
 void UHealthManagerComponent::ReduceHealth(float AmountToReduce)
 {
+	if (!IsAlive)
+	{
+		return;
+	}
+	
 	Health -= AmountToReduce;
 	if (Health <= 0)
 	{
@@ -39,6 +44,7 @@ void UHealthManagerComponent::HandelDeath()
 	if (Health <= 0)
 	{
 		IsAlive = false;
+		UE_LOG(LogTemp, Warning, TEXT("This thing died bozo"));
 	}
 	else
 	{

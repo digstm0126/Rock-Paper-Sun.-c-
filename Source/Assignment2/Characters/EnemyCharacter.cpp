@@ -2,8 +2,6 @@
 
 
 #include "EnemyCharacter.h"
-
-#include "Component/HealthManagerComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -15,6 +13,7 @@ AEnemyCharacter::AEnemyCharacter()
 
 	PlayerDetectionSphere = CreateDefaultSubobject<USphereComponent>(FName("PlayerDetectionSphere"));
 	AttackRadiusSphere = CreateDefaultSubobject<USphereComponent>(FName("AttackRadiusSphere"));
+	HealthManger = CreateDefaultSubobject<UHealthManagerComponent>(FName("UHealthManagerComponent"));
 
 	if (RootComponent)
 	{
@@ -45,6 +44,7 @@ void AEnemyCharacter::BeginPlay()
 float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
+	
 	if (HealthManger)
 	{
 		HealthManger->ReduceHealth(DamageAmount);

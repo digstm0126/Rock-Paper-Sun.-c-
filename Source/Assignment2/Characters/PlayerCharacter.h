@@ -49,13 +49,10 @@ public:
 	void SetRightHeldItem(UStaticMeshComponent* NewMesh);
 
 	void SetUpItem();
-	void DoDamage(AEnemyCharacter* EnemyCharacter);
+	void DoDamage(const FPointDamageEvent& DamageEvent);
 
 	UPROPERTY(EditAnywhere)
 	float Damage = 1.0f;
-
-	UPROPERTY(EditAnywhere)
-	UNiagaraSystem* Blood;
 	
 	UFUNCTION()
 	void HandelHit(UPrimitiveComponent* OverlappedComponent,

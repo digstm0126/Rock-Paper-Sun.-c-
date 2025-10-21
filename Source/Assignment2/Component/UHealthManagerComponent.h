@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "Components/ActorComponent.h"
 #include "UHealthManagerComponent.generated.h"
 
@@ -22,9 +23,16 @@ public:
 	float MaxHealth = 100;
 	UPROPERTY(EditAnywhere)
 	bool IsAlive = true;
+	
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* Blood;
+
+
+	UPROPERTY(EditAnywhere)
+	float BloodOffSet = 100.0f;
 
 	//reduces health by amount to reduce. >= 0 triggers handel death
-	void ReduceHealth(float AmountToReduce);
+	void ReduceHealth(const FDamageEvent& DamageEvent);
 	
 	void AddHealth(float AmountToAdd);
 	

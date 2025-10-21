@@ -3,6 +3,9 @@
 
 #include "UHealthManagerComponent.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "Engine/DamageEvents.h"
+
 // Sets default values for this component's properties
 UHealthManagerComponent::UHealthManagerComponent()
 {
@@ -14,14 +17,24 @@ UHealthManagerComponent::UHealthManagerComponent()
 }
 
 
-void UHealthManagerComponent::ReduceHealth(float AmountToReduce)
+
+
+void UHealthManagerComponent::ReduceHealth(const FDamageEvent& DamageEvent)
 {
 	if (!IsAlive)
 	{
 		return;
 	}
+
+	const FDamageEvent* DamageEventPtr = &DamageEvent;
+	if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent* PointDamageEventPtr = (FPointDamageEvent*) &DamageEvent;
+		Health -= PointDamageEventPtr->Damage;
+		
+		UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, PointDamageEventPtr->HitInfo.GetActor()->GetRootComponent(), NAME_None, FVector(0,0,BloodOffSet), FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
+	}
 	
-	Health -= AmountToReduce;
 	if (Health <= 0)
 	{
 		Health = 0;

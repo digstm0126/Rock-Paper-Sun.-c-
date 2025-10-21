@@ -3,6 +3,7 @@
 
 #include "EnemyCharacter.h"
 #include "Components/SphereComponent.h"
+#include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -47,7 +48,7 @@ float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	
 	if (HealthManger)
 	{
-		HealthManger->ReduceHealth(DamageAmount);
+		HealthManger->ReduceHealth(DamageEvent);
 	}
 	else
 	{

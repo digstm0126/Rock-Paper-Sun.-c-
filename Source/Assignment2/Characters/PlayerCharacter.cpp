@@ -36,11 +36,10 @@ void APlayerCharacter::SetUpItem()
 }
 
 
-void APlayerCharacter::DoDamage(AEnemyCharacter* EnemyCharacter)
+void APlayerCharacter::DoDamage(const FPointDamageEvent& DamageEvent)
 {
-	FDamageEvent DamageEvent;
-	EnemyCharacter->TakeDamage(Damage, DamageEvent, GetController(), this);
-	UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, RightHandItem, NAME_None, FVector3d(0,0,0), FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
+
+	DamageEvent.HitInfo.GetActor()->TakeDamage(Damage, DamageEvent, GetController(), this);
 
 	// Get the game mode
 	if (AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this))
@@ -77,6 +76,7 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 		return;
 	}
 
+	
 	//checks if it's a Damageable Actor
 	if (OtherActor->CanBeDamaged())
 	{
@@ -88,12 +88,15 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 			{
 				return;
 			}
+			
+			FPointDamageEvent DamageEvent = FPointDamageEvent();
+			DamageEvent.HitInfo = SweepResult;
+			
 			UE_LOG(LogCore, Error, TEXT("can atack"));
 			AEnemyCharacter* EnemyCharacter = CastChecked<AEnemyCharacter>(OtherActor);
 			if (EnemyCharacter)
 			{
-				UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, Capsule, NAME_None, FVector3d(0,0,100), FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
-				DoDamage(EnemyCharacter);
+				DoDamage(DamageEvent);
 				StopAttacking();
 			}
 		}

@@ -2,6 +2,8 @@
 
 
 #include "EnemyCharacter.h"
+
+#include "PlayerCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -24,6 +26,7 @@ AEnemyCharacter::AEnemyCharacter()
 
 			// Make sure it's attached to the root component
 			AttackRadiusSphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+			PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightOverlap);	
 		}
 		
 		if (PlayerDetectionSphere)
@@ -62,12 +65,29 @@ float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//check player in view
 
+	//chase player
+	
 }
 
 // Called to bind functionality to input
 void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AEnemyCharacter::HandelSightOverlap(UPrimitiveComponent* OverlappedComponent,
+                                         AActor* OtherActor,
+                                         UPrimitiveComponent* OtherComp,
+                                         int32 OtherBodyIndex,
+                                         bool bFromSweep,
+                                         const FHitResult& SweepResult)
+{
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
+	{
+		ActivePlayer = Player;
+		UE_LOG(LogActor, Log, TEXT("found new player to chase"))
+	}
 }
 

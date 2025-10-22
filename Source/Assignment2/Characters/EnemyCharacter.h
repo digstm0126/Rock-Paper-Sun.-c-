@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PlayerCharacter.h"
 #include "Component/UHealthManagerComponent.h"
 #include "GameFramework/Character.h"
 #include "EnemyCharacter.generated.h"
@@ -32,13 +33,17 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UHealthManagerComponent* HealthManger;
-	
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	/**
+	 * player currently changing if null ptr then not chasing
+	 */
+	AActor* ActivePlayer = nullptr;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -57,6 +62,14 @@ public:
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	void StopAttacking();
+
+	UFUNCTION()
+	void HandelSightOverlap(UPrimitiveComponent* OverlappedComponent,
+							AActor* OtherActor,
+							UPrimitiveComponent* OtherComp,
+							int32 OtherBodyIndex,
+							bool bFromSweep,
+							const FHitResult& SweepResult);
 
 	/**
 	* Query the Enemy to see if the attack animation is playing

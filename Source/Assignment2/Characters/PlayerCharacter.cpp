@@ -39,7 +39,8 @@ void APlayerCharacter::SetUpItem()
 void APlayerCharacter::DoDamage(const FPointDamageEvent& DamageEvent)
 {
 	//deals damage to actor
-	DamageEvent.HitInfo.GetActor()->TakeDamage(Damage, DamageEvent, GetController(), this)
+	DamageEvent.HitInfo.GetActor()->TakeDamage(Damage, DamageEvent, GetController(), this);
+	
 	//displays mesage
 	// Get the game mode
 	if (AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this))

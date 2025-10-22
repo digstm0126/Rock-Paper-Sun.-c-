@@ -38,9 +38,9 @@ void APlayerCharacter::SetUpItem()
 
 void APlayerCharacter::DoDamage(const FPointDamageEvent& DamageEvent)
 {
-
-	DamageEvent.HitInfo.GetActor()->TakeDamage(Damage, DamageEvent, GetController(), this);
-
+	//deals damage to actor
+	DamageEvent.HitInfo.GetActor()->TakeDamage(Damage, DamageEvent, GetController(), this)
+	//displays mesage
 	// Get the game mode
 	if (AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this))
 	{
@@ -88,17 +88,15 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 			{
 				return;
 			}
-			
+
+			//sets up event
 			FPointDamageEvent DamageEvent = FPointDamageEvent();
 			DamageEvent.HitInfo = SweepResult;
+			DamageEvent.Damage = Damage;
+			DoDamage(DamageEvent);
 			
-			UE_LOG(LogCore, Error, TEXT("can atack"));
-			AEnemyCharacter* EnemyCharacter = CastChecked<AEnemyCharacter>(OtherActor);
-			if (EnemyCharacter)
-			{
-				DoDamage(DamageEvent);
-				StopAttacking();
-			}
+			StopAttacking();
+			
 		}
 	}
 	

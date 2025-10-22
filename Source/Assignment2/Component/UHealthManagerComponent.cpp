@@ -2,8 +2,9 @@
 
 
 #include "UHealthManagerComponent.h"
-
 #include "NiagaraFunctionLibrary.h"
+#include "Characters/EnemyCharacter.h"
+#include "Characters/PlayerCharacter.h"
 #include "Engine/DamageEvents.h"
 
 // Sets default values for this component's properties
@@ -31,8 +32,9 @@ void UHealthManagerComponent::ReduceHealth(const FDamageEvent& DamageEvent)
 	{
 		FPointDamageEvent* PointDamageEventPtr = (FPointDamageEvent*) &DamageEvent;
 		Health -= PointDamageEventPtr->Damage;
-		
-		UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, PointDamageEventPtr->HitInfo.GetActor()->GetRootComponent(), NAME_None, FVector(0,0,BloodOffSet), FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
+
+		FRotator BloodRotation = FRotator(FMath::RandRange(BloodRotationOffSetMin, BloodRotationOffSetMax), FMath::RandRange(BloodRotationOffSetMin, BloodRotationOffSetMax), FMath::RandRange(BloodRotationOffSetMin, BloodRotationOffSetMax));
+		UNiagaraFunctionLibrary::SpawnSystemAttached(Blood, PointDamageEventPtr->HitInfo.GetActor()->GetRootComponent(), NAME_None, FVector(0,0,BloodOffSet), BloodRotation, EAttachLocation::SnapToTarget, true);
 	}
 	
 	if (Health <= 0)
@@ -57,6 +59,14 @@ void UHealthManagerComponent::HandelDeath()
 	if (Health <= 0)
 	{
 		IsAlive = false;
+		if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(GetOwner()))
+		{
+			Enemy->Ragdoll();
+		}
+		if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+		{
+			Player->Ragdoll();
+		}
 		UE_LOG(LogTemp, Warning, TEXT("This thing died bozo"));
 	}
 	else

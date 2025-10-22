@@ -26,10 +26,13 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* Blood;
-
-
+	
 	UPROPERTY(EditAnywhere)
 	float BloodOffSet = 100.0f;
+	UPROPERTY(EditAnywhere)
+	float BloodRotationOffSetMin = 1;
+	UPROPERTY(EditAnywhere)
+	float BloodRotationOffSetMax = 20;
 
 	//reduces health by amount to reduce. >= 0 triggers handel death
 	void ReduceHealth(const FDamageEvent& DamageEvent);

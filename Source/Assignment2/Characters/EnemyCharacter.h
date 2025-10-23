@@ -44,7 +44,9 @@ protected:
 	 * player currently changing if null ptr then not chasing
 	 */
 	AActor* ActivePlayer = nullptr;
-public:	
+
+	bool CheckValidChase();
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

@@ -3,10 +3,12 @@
 
 #include "EnemyCharacter.h"
 
+#include "AudioMixerBlueprintLibrary.h"
 #include "PlayerCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Slate/SGameLayerManager.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -61,13 +63,36 @@ float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 }
 
 
+bool AEnemyCharacter::CheckValidChase()
+{
+	if (ActivePlayer == nullptr)
+	{
+		return false;
+	}
+
+	//check distance form player
+	float DistanceFromPlayer = FVector::Distance(ActivePlayer->GetActorLocation(), GetActorLocation());
+	if (DistanceFromPlayer <= PlayerDetectionRadius)
+	{
+		return true;
+	}
+
+	//if not in range get rid of reference to player and return false
+	ActivePlayer = nullptr;
+	return false;
+}
+
 // Called every frame
 void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//check player in view
 
-	//chase player
+	//check player in view
+	if (CheckValidChase())
+	{
+		//chase player
+		
+	}
 	
 }
 

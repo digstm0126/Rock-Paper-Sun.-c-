@@ -36,14 +36,15 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	/**
+	 * player currently changing if null ptr then not chasing
+	 */
+	UPROPERTY(EditAnywhere)
+	AActor* ActivePlayer = nullptr;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	/**
-	 * player currently changing if null ptr then not chasing
-	 */
-	AActor* ActivePlayer = nullptr;
 
 	UCharacterMovementComponent* CharacterMovementComponent = nullptr;
 

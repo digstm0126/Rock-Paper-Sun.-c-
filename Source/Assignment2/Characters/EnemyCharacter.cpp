@@ -3,12 +3,10 @@
 
 #include "EnemyCharacter.h"
 
-#include "AudioMixerBlueprintLibrary.h"
 #include "PlayerCharacter.h"
 #include "Components/SphereComponent.h"
-#include "Engine/DamageEvents.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Slate/SGameLayerManager.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -29,8 +27,7 @@ AEnemyCharacter::AEnemyCharacter()
 
 			// Make sure it's attached to the root component
 			AttackRadiusSphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-			PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightOverlap);	
-			PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightEndOverlap);	
+			
 		}
 		
 		if (PlayerDetectionSphere)
@@ -39,6 +36,8 @@ AEnemyCharacter::AEnemyCharacter()
 
 			// Make sure it's attached to the root component
 			PlayerDetectionSphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+			PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightOverlap);	
+			PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightEndOverlap);	
 		}
 	}
 }
@@ -77,7 +76,7 @@ bool AEnemyCharacter::CheckValidChase()
 	{
 		return true;
 	}
-	yer
+
 	return false;
 }
 
@@ -100,7 +99,6 @@ void AEnemyCharacter::Tick(float DeltaTime)
 			UE_LOG(LogTemp, Error, TEXT("CharacterMovementComponent is null"));
 		}
 	}
-	
 }
 
 // Called to bind functionality to input
@@ -117,10 +115,15 @@ void AEnemyCharacter::HandelSightOverlap(UPrimitiveComponent* OverlappedComponen
                                          bool bFromSweep,
                                          const FHitResult& SweepResult)
 {
+	
+	
 	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
-		ActivePlayer = Player;
-		UE_LOG(LogActor, Log, TEXT("found new player to chase"))
+		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
+		{
+			ActivePlayer = Player;
+			UE_LOG(LogActor, Log, TEXT("found new player to chase"))
+		}
 	}
 }
 
@@ -129,9 +132,18 @@ void AEnemyCharacter::HandelSightEndOverlap(UPrimitiveComponent* OverlappedCompo
 											UPrimitiveComponent* OtherComp,
 											int32 OtherBodyIndex)
 {
+	if (ActivePlayer == nullptr)
+	{
+		return;
+	}
+	
 	if (OtherActor == ActivePlayer)
 	{
-		ActivePlayer = nullptr;
+		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
+		{
+			UE_LOG(LogActor, Log, TEXT("lost Player to chase"))
+			ActivePlayer = nullptr;
+		}
 	}
 }
 

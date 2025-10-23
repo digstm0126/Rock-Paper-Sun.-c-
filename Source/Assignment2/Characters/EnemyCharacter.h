@@ -75,6 +75,12 @@ public:
 							bool bFromSweep,
 							const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void HandelSightEndOverlap(UPrimitiveComponent* OverlappedComponent,
+								AActor* OtherActor,
+								UPrimitiveComponent* OtherComp,
+								int32 OtherBodyIndex);
+
 	/**
 	* Query the Enemy to see if the attack animation is playing
 	*/

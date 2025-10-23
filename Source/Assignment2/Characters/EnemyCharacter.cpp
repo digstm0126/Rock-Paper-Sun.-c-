@@ -17,6 +17,7 @@ AEnemyCharacter::AEnemyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	PlayerDetectionSphere = CreateDefaultSubobject<USphereComponent>(FName("PlayerDetectionSphere"));
+	CharacterMovementComponent = CreateDefaultSubobject<UCharacterMovementComponent>(FName("PlayerMovementComponent"));
 	AttackRadiusSphere = CreateDefaultSubobject<USphereComponent>(FName("AttackRadiusSphere"));
 	HealthManger = CreateDefaultSubobject<UHealthManagerComponent>(FName("UHealthManagerComponent"));
 
@@ -29,6 +30,7 @@ AEnemyCharacter::AEnemyCharacter()
 			// Make sure it's attached to the root component
 			AttackRadiusSphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 			PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightOverlap);	
+			PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightEndOverlap);	
 		}
 		
 		if (PlayerDetectionSphere)
@@ -70,15 +72,12 @@ bool AEnemyCharacter::CheckValidChase()
 		return false;
 	}
 
-	//check distance form player
-	float DistanceFromPlayer = FVector::Distance(ActivePlayer->GetActorLocation(), GetActorLocation());
-	if (DistanceFromPlayer <= PlayerDetectionRadius)
+	//check sight **to do**
+	if (true)
 	{
 		return true;
 	}
-
-	//if not in range get rid of reference to player and return false
-	ActivePlayer = nullptr;
+	yer
 	return false;
 }
 
@@ -92,7 +91,14 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	{
 		//chase player
 		FVector Direction = ActivePlayer->GetActorLocation() - GetActorLocation();
-		 CharacterMovement->AddInputVector(Direction);
+		if (CharacterMovementComponent)
+		{
+			CharacterMovementComponent->AddInputVector(Direction);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("CharacterMovementComponent is null"));
+		}
 	}
 	
 }
@@ -103,6 +109,7 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+	
 void AEnemyCharacter::HandelSightOverlap(UPrimitiveComponent* OverlappedComponent,
                                          AActor* OtherActor,
                                          UPrimitiveComponent* OtherComp,
@@ -114,6 +121,17 @@ void AEnemyCharacter::HandelSightOverlap(UPrimitiveComponent* OverlappedComponen
 	{
 		ActivePlayer = Player;
 		UE_LOG(LogActor, Log, TEXT("found new player to chase"))
+	}
+}
+
+void AEnemyCharacter::HandelSightEndOverlap(UPrimitiveComponent* OverlappedComponent,
+											AActor* OtherActor,
+											UPrimitiveComponent* OtherComp,
+											int32 OtherBodyIndex)
+{
+	if (OtherActor == ActivePlayer)
+	{
+		ActivePlayer = nullptr;
 	}
 }
 

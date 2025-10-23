@@ -45,6 +45,8 @@ protected:
 	 */
 	AActor* ActivePlayer = nullptr;
 
+	UCharacterMovementComponent* CharacterMovementComponent = nullptr;
+
 	bool CheckValidChase();
 public:
 	// Called every frame

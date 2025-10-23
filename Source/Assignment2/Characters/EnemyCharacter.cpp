@@ -91,7 +91,8 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	if (CheckValidChase())
 	{
 		//chase player
-		
+		FVector Direction = ActivePlayer->GetActorLocation() - GetActorLocation();
+		 CharacterMovement->AddInputVector(Direction);
 	}
 	
 }

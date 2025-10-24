@@ -34,21 +34,62 @@ public:
 	UPROPERTY(EditAnywhere)
 	UHealthManagerComponent* HealthManger;
 
+	UPROPERTY(EditAnywhere)
+	float AttackInterval = 1.6f;
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
-	/**
-	 * player currently changing if null ptr then not chasing
-	 */
-	UPROPERTY(EditAnywhere)
-	AActor* ActivePlayer = nullptr;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-
 	UCharacterMovementComponent* CharacterMovementComponent = nullptr;
 
+	/**
+	 * player currently changing if null ptr then not chasing
+	 */
+	AActor* ActivePlayer = nullptr;
+	
+	FTimerHandle AttackTimerHandle = FTimerHandle();
+
 	bool CheckValidChase();
+
+	bool CheckSightToActivePlayer();
+	
+	void HandelAttack();
+
+	bool LoopingAttack;
+
+	UFUNCTION()
+	void HandelStartSightOverlap(UPrimitiveComponent* OverlappedComponent,
+							AActor* OtherActor,
+							UPrimitiveComponent* OtherComp,
+							int32 OtherBodyIndex,
+							bool bFromSweep,
+							const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandelEndSightOverlap(UPrimitiveComponent* OverlappedComponent,
+								AActor* OtherActor,
+								UPrimitiveComponent* OtherComp,
+								int32 OtherBodyIndex);
+
+
+	UFUNCTION()
+	void HandelStartAttackOverlap(UPrimitiveComponent* OverlappedComponent,
+							AActor* OtherActor,
+							UPrimitiveComponent* OtherComp,
+							int32 OtherBodyIndex,
+							bool bFromSweep,
+							const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void HandelEndAttackOverlap(UPrimitiveComponent* OverlappedComponent,
+								AActor* OtherActor,
+								UPrimitiveComponent* OtherComp,
+								int32 OtherBodyIndex);
+
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -67,20 +108,6 @@ public:
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	void StopAttacking();
-
-	UFUNCTION()
-	void HandelSightOverlap(UPrimitiveComponent* OverlappedComponent,
-							AActor* OtherActor,
-							UPrimitiveComponent* OtherComp,
-							int32 OtherBodyIndex,
-							bool bFromSweep,
-							const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void HandelSightEndOverlap(UPrimitiveComponent* OverlappedComponent,
-								AActor* OtherActor,
-								UPrimitiveComponent* OtherComp,
-								int32 OtherBodyIndex);
 
 	/**
 	* Query the Enemy to see if the attack animation is playing

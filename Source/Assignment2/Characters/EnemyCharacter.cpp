@@ -7,6 +7,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/CollisionProfile.h"
+#include "GeometryCollection/GeometryCollectionParticlesData.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -27,6 +29,8 @@ AEnemyCharacter::AEnemyCharacter()
 
 			// Make sure it's attached to the root component
 			AttackRadiusSphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+			AttackRadiusSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelStartAttackOverlap);	
+			AttackRadiusSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacter::HandelEndAttackOverlap);	
 			
 		}
 		
@@ -36,8 +40,8 @@ AEnemyCharacter::AEnemyCharacter()
 
 			// Make sure it's attached to the root component
 			PlayerDetectionSphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-			PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightOverlap);	
-			PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacter::HandelSightEndOverlap);	
+			PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelStartSightOverlap);	
+			PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacter::HandelEndSightOverlap);	
 		}
 	}
 }
@@ -80,6 +84,49 @@ bool AEnemyCharacter::CheckValidChase()
 	return false;
 }
 
+bool AEnemyCharacter::CheckSightToActivePlayer()
+{
+	if (ActivePlayer == nullptr)
+	{
+		return false;
+	}
+
+	
+	FHitResult HitResult;
+	if (GetWorld()->LineTraceSingleByProfile(HitResult, GetActorLocation(), ActivePlayer->GetActorLocation(), FName("Enemy"), FCollisionQueryParams::DefaultQueryParam))
+	{
+		
+	}
+	
+		
+	
+	return true;
+}
+
+void AEnemyCharacter::HandelAttack()
+{
+	if (CheckSightToActivePlayer())
+	{
+		StartAttacking();
+	}
+	else
+	{
+		//removes timer
+		if (UGameInstance* GameInstance = GetGameInstance())
+		{
+			FTimerManager& TimerManager = GameInstance->GetTimerManager();
+			TimerManager.ClearTimer(AttackTimerHandle);
+		}
+
+		//stops attacking if attacking
+		if (IsAttacking())
+		{
+			StopAttacking();
+		}
+	}
+}
+
+
 // Called every frame
 void AEnemyCharacter::Tick(float DeltaTime)
 {
@@ -107,16 +154,13 @@ void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-	
-void AEnemyCharacter::HandelSightOverlap(UPrimitiveComponent* OverlappedComponent,
+void AEnemyCharacter::HandelStartSightOverlap(UPrimitiveComponent* OverlappedComponent,
                                          AActor* OtherActor,
                                          UPrimitiveComponent* OtherComp,
                                          int32 OtherBodyIndex,
                                          bool bFromSweep,
                                          const FHitResult& SweepResult)
 {
-	
-	
 	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
 		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
@@ -127,7 +171,7 @@ void AEnemyCharacter::HandelSightOverlap(UPrimitiveComponent* OverlappedComponen
 	}
 }
 
-void AEnemyCharacter::HandelSightEndOverlap(UPrimitiveComponent* OverlappedComponent,
+void AEnemyCharacter::HandelEndSightOverlap(UPrimitiveComponent* OverlappedComponent,
 											AActor* OtherActor,
 											UPrimitiveComponent* OtherComp,
 											int32 OtherBodyIndex)
@@ -136,13 +180,68 @@ void AEnemyCharacter::HandelSightEndOverlap(UPrimitiveComponent* OverlappedCompo
 	{
 		return;
 	}
-	
+	 
 	if (OtherActor == ActivePlayer)
 	{
 		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
 		{
 			UE_LOG(LogActor, Log, TEXT("lost Player to chase"))
 			ActivePlayer = nullptr;
+		}
+	}
+}
+
+void AEnemyCharacter::HandelStartAttackOverlap(UPrimitiveComponent* OverlappedComponent,
+												AActor* OtherActor,
+												UPrimitiveComponent* OtherComp,
+												int32 OtherBodyIndex,
+												bool bFromSweep,
+												const FHitResult& SweepResult)
+{
+	if (Cast<APlayerCharacter>(OtherActor))
+	{
+		if (Cast<UCapsuleComponent>(OtherComp))
+		{
+			if (UGameInstance* GameInstance = GetGameInstance())
+			{
+				FTimerManager& TimerManager = GameInstance->GetTimerManager();
+				FTimerDelegate TimerDelegate;
+				TimerDelegate.BindUObject(this, &AEnemyCharacter::HandelAttack);
+				TimerManager.SetTimer(AttackTimerHandle, TimerDelegate, AttackInterval, true);
+			}
+			UE_LOG(LogActor, Log, TEXT("Can Attack Player"))
+		}
+	}
+}
+
+void AEnemyCharacter::HandelEndAttackOverlap(UPrimitiveComponent* OverlappedComponent,
+												AActor* OtherActor,
+												UPrimitiveComponent* OtherComp,
+												int32 OtherBodyIndex)
+{
+	if (ActivePlayer == nullptr || LoopingAttack == false)
+	{
+		return;
+	}
+	 
+	if (OtherActor == ActivePlayer)
+	{
+		if (Cast<UCapsuleComponent>(OtherComp))
+		{
+			//removes timer
+			if (UGameInstance* GameInstance = GetGameInstance())
+			{
+				FTimerManager& TimerManager = GameInstance->GetTimerManager();
+				TimerManager.ClearTimer(AttackTimerHandle);
+			}
+
+			//stops attacking if attacking
+			if (IsAttacking())
+			{
+				StopAttacking();
+			}
+			
+			UE_LOG(LogActor, Log, TEXT("lost Player to atack"))
 		}
 	}
 }

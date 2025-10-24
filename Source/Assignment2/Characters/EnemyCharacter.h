@@ -38,8 +38,19 @@ public:
 	float AttackInterval = 1.6f;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-
+	
 protected:
+
+	void SetUpItem();
+	
+	UFUNCTION()
+	void HandelHit(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult);
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
@@ -89,6 +100,12 @@ protected:
 								UPrimitiveComponent* OtherComp,
 								int32 OtherBodyIndex);
 
+	/**
+	* Listen to this sword's overlap events to deal damage to enemies.
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* RightHandItem;
+
 	
 public:
 	// Called every frame
@@ -120,4 +137,6 @@ public:
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	void Ragdoll();
+
+	
 };

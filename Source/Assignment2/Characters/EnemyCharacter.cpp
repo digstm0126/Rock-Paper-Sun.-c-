@@ -46,6 +46,8 @@ AEnemyCharacter::AEnemyCharacter()
 			PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemyCharacter::HandelEndSightOverlap);	
 		}
 	}
+
+	SetUpItem();
 }
 
 // Called when the game starts or when spawned
@@ -68,6 +70,26 @@ float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	}
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
+
+void AEnemyCharacter::SetUpItem()
+{
+	RightHandItem = CreateDefaultSubobject<UStaticMeshComponent>(FName("SwordMesh"));
+	if (!RightHandItem)
+	{
+		UE_LOG(LogCore, Error, TEXT("no mesh to bind to"))
+		return;
+	}
+	
+	RightHandItem->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("Hand_R"));
+	RightHandItem->OnComponentBeginOverlap.AddDynamic(this, &AEnemyCharacter::HandelHit);
+}
+
+void AEnemyCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
+}
+
 
 
 bool AEnemyCharacter::CheckValidChase()

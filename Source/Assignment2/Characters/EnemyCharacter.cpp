@@ -6,6 +6,8 @@
 #include "PlayerCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "DrawDebugHelpers.h"
+#include "KismetTraceUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "GeometryCollection/GeometryCollectionParticlesData.h"
@@ -90,15 +92,19 @@ bool AEnemyCharacter::CheckSightToActivePlayer()
 	{
 		return false;
 	}
-
 	
 	FHitResult HitResult;
-	if (GetWorld()->LineTraceSingleByProfile(HitResult, GetActorLocation(), ActivePlayer->GetActorLocation(), FName("Enemy"), FCollisionQueryParams::DefaultQueryParam))
+	
+	DrawDebugLineTraceSingle(GetWorld(), GetActorLocation(), ActivePlayer->GetActorLocation(),
+	EDrawDebugTrace::ForOneFrame, false, HitResult, FLinearColor::Red, FLinearColor::Green,
+	1);
+	
+	if (GetWorld()->LineTraceSingleByProfile(HitResult, GetActorLocation(), ActivePlayer->GetActorLocation(),
+	FName("IgnoreOnlyPawn"), FCollisionQueryParams::DefaultQueryParam))
 	{
-		
+		return false;
 	}
 	
-		
 	
 	return true;
 }
@@ -132,8 +138,16 @@ void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//check player in view
-	if (CheckValidChase())
+	if (!CheckSightToActivePlayer())
+	{
+		return;
+	}
+	
+	if (IsAttacking())
+	{
+		CheckSightToActivePlayer();
+	}
+	else if (CheckValidChase())//check player in view
 	{
 		//chase player
 		FVector Direction = ActivePlayer->GetActorLocation() - GetActorLocation();

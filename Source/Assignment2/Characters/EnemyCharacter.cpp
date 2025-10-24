@@ -76,14 +76,7 @@ bool AEnemyCharacter::CheckValidChase()
 	{
 		return false;
 	}
-
-	//check sight **to do**
-	if (true)
-	{
-		return true;
-	}
-
-	return false;
+	return true;
 }
 
 bool AEnemyCharacter::CheckSightToActivePlayer()
@@ -117,12 +110,6 @@ void AEnemyCharacter::HandelAttack()
 	}
 	else
 	{
-		//removes timer
-		if (UGameInstance* GameInstance = GetGameInstance())
-		{
-			FTimerManager& TimerManager = GameInstance->GetTimerManager();
-			TimerManager.ClearTimer(AttackTimerHandle);
-		}
 
 		//stops attacking if attacking
 		if (IsAttacking())
@@ -223,6 +210,7 @@ void AEnemyCharacter::HandelStartAttackOverlap(UPrimitiveComponent* OverlappedCo
 				TimerDelegate.BindUObject(this, &AEnemyCharacter::HandelAttack);
 				TimerManager.SetTimer(AttackTimerHandle, TimerDelegate, AttackInterval, true);
 			}
+			HandelAttack();
 			UE_LOG(LogActor, Log, TEXT("Can Attack Player"))
 		}
 	}
@@ -233,7 +221,7 @@ void AEnemyCharacter::HandelEndAttackOverlap(UPrimitiveComponent* OverlappedComp
 												UPrimitiveComponent* OtherComp,
 												int32 OtherBodyIndex)
 {
-	if (ActivePlayer == nullptr || LoopingAttack == false)
+	if (ActivePlayer == nullptr)
 	{
 		return;
 	}

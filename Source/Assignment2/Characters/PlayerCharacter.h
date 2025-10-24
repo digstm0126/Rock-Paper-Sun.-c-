@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Component/UHealthManagerComponent.h"
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
@@ -26,11 +27,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	/**
 	* Interrupt / stop the attack animation if it is currently playing
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	void StopAttacking();
+
+	UPROPERTY(EditAnywhere)
+	UHealthManagerComponent* HealthManger;
 
 	/**
 	* Query the player to see if the attack animation is playing

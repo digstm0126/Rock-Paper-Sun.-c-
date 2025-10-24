@@ -37,6 +37,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	float AttackInterval = 1.6f;
 
+	UPROPERTY(EditAnywhere)
+	TArray<UClass*> AttackableActors;
+
+	UPROPERTY(EditAnywhere)
+	float Damage = 10;
+
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
 protected:
@@ -50,7 +56,7 @@ protected:
 	int32 OtherBodyIndex,
 	bool bFromSweep,
 	const FHitResult& SweepResult);
-	
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	

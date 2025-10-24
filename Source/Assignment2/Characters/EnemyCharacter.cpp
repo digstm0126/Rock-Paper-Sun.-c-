@@ -3,6 +3,7 @@
 
 #include "EnemyCharacter.h"
 
+#include "Assignment2GameMode.h"
 #include "PlayerCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -10,7 +11,9 @@
 #include "KismetTraceUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/CollisionProfile.h"
+#include "Engine/DamageEvents.h"
 #include "GeometryCollection/GeometryCollectionParticlesData.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
@@ -87,9 +90,41 @@ void AEnemyCharacter::SetUpItem()
 void AEnemyCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//check if bing used is atacking
+	if (!IsAttacking())
+	{
+		return;
+	}
 	
-}
+	//check if not user
+	if (OtherActor == this)
+	{
+		return;
+	}
 
+	
+	//checks if it's a Damageable Actor
+	if (OtherActor->CanBeDamaged())
+	{
+		//check Actor is one of the hit able classes
+		if (AttackableActors.Contains(OtherActor->GetClass()))
+		{
+			UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp);
+			if (Capsule == nullptr)
+			{
+				return;
+			}
+
+			//sets up event
+			FPointDamageEvent DamageEvent = FPointDamageEvent();
+			DamageEvent.HitInfo = SweepResult;
+			DamageEvent.Damage = Damage;
+			DamageEvent.HitInfo.GetActor()->TakeDamage(Damage, DamageEvent, GetController(), this);
+			
+			StopAttacking();
+		}
+	}
+}
 
 
 bool AEnemyCharacter::CheckValidChase()

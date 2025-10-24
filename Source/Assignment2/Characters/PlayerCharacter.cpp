@@ -15,7 +15,7 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	HealthManger = CreateDefaultSubobject<UHealthManagerComponent>(FName("UHealthManagerComponent"));
 	
 	// set up item
 	SetUpItem();
@@ -122,6 +122,22 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	
+	if (HealthManger)
+	{
+		HealthManger->ReduceHealth(DamageEvent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HealthManger is null"));
+	}
+	
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void APlayerCharacter::SetRightHeldItem(UStaticMeshComponent* NewMesh)

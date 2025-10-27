@@ -126,16 +126,6 @@ void AEnemyCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent, AActor
 	}
 }
 
-
-bool AEnemyCharacter::CheckValidChase()
-{
-	if (ActivePlayer == nullptr)
-	{
-		return false;
-	}
-	return true;
-}
-
 bool AEnemyCharacter::CheckSightToActivePlayer()
 {
 	if (ActivePlayer == nullptr)
@@ -187,11 +177,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		return;
 	}
 	
-	if (IsAttacking())
-	{
-		CheckSightToActivePlayer();
-	}
-	else if (CheckValidChase())//check player in view
+	if (!IsAttacking())
 	{
 		//chase player
 		FVector Direction = ActivePlayer->GetActorLocation() - GetActorLocation();

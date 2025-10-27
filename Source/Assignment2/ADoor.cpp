@@ -12,6 +12,17 @@ AADoor::AADoor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(FName("RootComponent"));
+	
+	DoorOffSet = CreateDefaultSubobject<USceneComponent>(FName("DoorOffset"));
+	DoorOffSet->SetupAttachment(RootComponent);
+	
+	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("DoorMesh"));
+	DoorMesh->SetupAttachment(DoorOffSet);
+	
+	DetectionCapsule = CreateDefaultSubobject<UCapsuleComponent>(FName("DetectionCapsule"));
+	DetectionCapsule->SetupAttachment(RootComponent);
+	
     if (DetectionCapsule)
     {
 	    DetectionCapsule->SetCapsuleRadius(DetectionCapsuleRadius);
@@ -59,7 +70,7 @@ void AADoor::Tick(float DeltaTime)
 		// get rotation
 		FRotator NewDoorRotation = FMath::RInterpTo(ClosedRotation, OpenRotation, DeltaTime, DoorSpeed);
 		//set door rotation
-
+		DoorMesh->SetWorldRotation(NewDoorRotation);
 		//if open stops ticking
 		if (NewDoorRotation == OpenRotation)
 		{
@@ -72,7 +83,7 @@ void AADoor::Tick(float DeltaTime)
 		// get rotation
 		FRotator NewDoorRotation = FMath::RInterpTo(OpenRotation, ClosedRotation, DeltaTime, DoorSpeed);
 		//set door rotation
-		
+		DoorMesh->SetWorldRotation(NewDoorRotation);
 		//if open stops ticking
 		if (NewDoorRotation == OpenRotation)
 		{

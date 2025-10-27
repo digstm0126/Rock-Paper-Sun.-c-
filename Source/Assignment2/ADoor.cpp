@@ -6,22 +6,19 @@
 #include "VectorTypes.h"
 #include "Characters/PlayerCharacter.h"
 
+
 // Sets default values
 AADoor::AADoor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
-
-	RootComponent = CreateDefaultSubobject<USceneComponent>(FName("RootComponent"));
-	
-	DoorOffSet = CreateDefaultSubobject<USceneComponent>(FName("DoorOffset"));
-	DoorOffSet->SetupAttachment(RootComponent);
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.SetTickFunctionEnable(false);
 	
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("DoorMesh"));
-	DoorMesh->SetupAttachment(DoorOffSet);
+	DoorMesh->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	
 	DetectionCapsule = CreateDefaultSubobject<UCapsuleComponent>(FName("DetectionCapsule"));
-	DetectionCapsule->SetupAttachment(RootComponent);
+	DetectionCapsule->AttachToComponent(DoorMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	
     if (DetectionCapsule)
     {
@@ -54,7 +51,7 @@ void AADoor::HandelDetectionOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
 		{
 			IsOpen = true;
-			PrimaryActorTick.bCanEverTick = true;
+			PrimaryActorTick.SetTickFunctionEnable(true);
 			UE_LOG(LogActor, Log, TEXT("Player opened Door"))
 		}
 	}
@@ -68,27 +65,27 @@ void AADoor::Tick(float DeltaTime)
 	if (IsOpen)
 	{
 		// get rotation
-		FRotator NewDoorRotation = FMath::RInterpTo(ClosedRotation, OpenRotation, DeltaTime, DoorSpeed);
+		FRotator NewDoorRotation = FMath::RInterpTo(DoorMesh->GetRelativeRotation(), OpenRotation, DeltaTime, DoorSpeed);
 		//set door rotation
 		DoorMesh->SetWorldRotation(NewDoorRotation);
 		//if open stops ticking
 		if (NewDoorRotation == OpenRotation)
 		{
 			//stop ticking
-			PrimaryActorTick.bCanEverTick = false;
+			PrimaryActorTick.SetTickFunctionEnable(false);
 		}
 	}
 	else
 	{
 		// get rotation
-		FRotator NewDoorRotation = FMath::RInterpTo(OpenRotation, ClosedRotation, DeltaTime, DoorSpeed);
+		FRotator NewDoorRotation = FMath::RInterpTo(DoorMesh->GetRelativeRotation(), OpenRotation, DeltaTime, DoorSpeed);
 		//set door rotation
 		DoorMesh->SetWorldRotation(NewDoorRotation);
 		//if open stops ticking
 		if (NewDoorRotation == OpenRotation)
 		{
 			//stop ticking
-			PrimaryActorTick.bCanEverTick = false;
+			PrimaryActorTick.SetTickFunctionEnable(false);
 		}
 	}
 }

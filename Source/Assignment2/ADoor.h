@@ -37,9 +37,6 @@ protected:
 	bool IsOpen = false;
 	bool IsLocked = false;
 
-	USceneComponent* RootComponent;
-	USceneComponent* DoorOffSet;
-
 	UFUNCTION()
 	void HandelDetectionOverlap(UPrimitiveComponent* OverlappedComponent,
 							AActor* OtherActor,

@@ -19,6 +19,8 @@ public:
 	void HandelDeath();
 	
 	class USphereComponent* InteractionSphere;
+
+	//TArray<Item*>
 	
 protected:
 	// Called when the game starts

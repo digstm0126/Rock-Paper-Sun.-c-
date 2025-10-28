@@ -2,8 +2,10 @@
 
 
 #include "UInventoryManager.h"
+#include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
 #include "Item.h"
+
 // Sets default values for this component's properties
 UInventoryManager::UInventoryManager()
 {
@@ -11,7 +13,8 @@ UInventoryManager::UInventoryManager()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	
-	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractableSphere"));
+	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractionSphere"));
+	 
 	
 	if (InteractionSphere)
 	{
@@ -31,6 +34,10 @@ void UInventoryManager::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	if (AActor* ActorToAttachTo = GetOwner())
+	{
+		InteractionSphere->AttachToComponent(ActorToAttachTo->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	}
 	
 }
 

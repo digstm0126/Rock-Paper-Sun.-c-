@@ -21,7 +21,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	class USphereComponent* InteractionSphere;
 
-	//TArray<Item*>
+	//TArray<Item*>/'
 	
 protected:
 	// Called when the game starts

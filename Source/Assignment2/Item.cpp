@@ -11,9 +11,9 @@ AItem::AItem()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
-	Mesh->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-
 	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractableSphere"));
+	
+	Mesh->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	InteractionSphere->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
  
 }

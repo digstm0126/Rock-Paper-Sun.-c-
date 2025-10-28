@@ -12,8 +12,7 @@ UInventoryManager::UInventoryManager()
 	PrimaryComponentTick.bCanEverTick = true;
 	
 	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractableSphere"));
-	InteractionSphere->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-
+	
 	if (InteractionSphere)
 	{
 		InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &UInventoryManager::HandelIntegrationOverlap);

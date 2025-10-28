@@ -9,13 +9,18 @@ AItem::AItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
 	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractableSphere"));
 	
 	Mesh->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	InteractionSphere->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
  
+}
+
+EFItemType AItem::GetItemType()
+{
+	return ItemType;
 }
 
 // Called when the game starts or when spawned

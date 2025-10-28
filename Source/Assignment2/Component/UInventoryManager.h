@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Item.h"
 #include "UInventoryManager.generated.h"
 
 
@@ -18,7 +19,7 @@ public:
 
 	void HandelDeath();
 
-	//TArray<Item*>/'
+	TArray<AItem*> Items; 
 	
 protected:
 	// Called when the game starts

@@ -2,9 +2,8 @@
 
 
 #include "UInventoryManager.h"
-#include "Components/SceneComponent.h"
-#include "Components/SphereComponent.h"
 #include "Item.h"
+#include "Components/SceneComponent.h"
 #include "Components/CapsuleComponent.h"
 
 // Sets default values for this component's properties
@@ -49,11 +48,22 @@ void UInventoryManager::HandelIntegrationOverlap(UPrimitiveComponent* Overlapped
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	
-	
 	//if item pick up
 	if (AItem* Item = Cast<AItem>(OtherActor))
 	{
-		UE_LOG(LogActorComponent, Warning, TEXT("hit and item yays"));
+		UClass* ItemClass = Item->GetClass(); 
+		AItem* ItemToAdd = CreateDefaultSubobject<AItem>(FName("ItemToAdd"));
+		//if key
+		switch (Item->GetItemType())
+		{
+		case EFItemType::Key:
+			ItemToAdd->ItemType = EFItemType::Key;
+			break;
+		default:
+			UE_LOG(LogActorComponent, Error, TEXT("item dose not have an item type"))
+		} 
+		Items.Add(ItemToAdd);
+		Item->Destroy();
 	}
 	//if door
 }

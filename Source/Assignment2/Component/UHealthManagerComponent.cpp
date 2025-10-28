@@ -6,6 +6,7 @@
 #include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
 #include "Engine/DamageEvents.h"
+#include "UInventoryManager.h"
 
 // Sets default values for this component's properties
 UHealthManagerComponent::UHealthManagerComponent()
@@ -58,6 +59,11 @@ void UHealthManagerComponent::HandelDeath()
 {
 	if (Health <= 0)
 	{
+		if (UInventoryManager* InventoryManager = GetOwner()->FindComponentByClass<UInventoryManager>())
+		{
+			InventoryManager->HandelDeath();
+		}
+		
 		IsAlive = false;
 		if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(GetOwner()))
 		{

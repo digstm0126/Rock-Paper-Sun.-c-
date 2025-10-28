@@ -5,6 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
 #include "Item.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values for this component's properties
 UInventoryManager::UInventoryManager()
@@ -12,14 +13,20 @@ UInventoryManager::UInventoryManager()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	
-	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractionSphere"));
-	 
-	
-	if (InteractionSphere)
+
+	if (AActor* ActorToAttachTo = GetOwner())
 	{
-		InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &UInventoryManager::HandelIntegrationOverlap);
+		UCapsuleComponent* CapsuleComponent = ActorToAttachTo->GetComponentByClass<UCapsuleComponent>();
+		if (ActorToAttachTo && CapsuleComponent)
+		{
+			CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &UInventoryManager::HandelIntegrationOverlap);
+		}
+		else
+		{
+			UE_LOG(LogActorComponent, Error, TEXT("no collider to bind intractions to"))
+		}
 	}
+	
 }
 
 void UInventoryManager::HandelDeath()
@@ -34,10 +41,7 @@ void UInventoryManager::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	if (AActor* ActorToAttachTo = GetOwner())
-	{
-		InteractionSphere->AttachToComponent(ActorToAttachTo->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	}
+	
 	
 }
 
@@ -45,11 +49,11 @@ void UInventoryManager::HandelIntegrationOverlap(UPrimitiveComponent* Overlapped
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	
-	UE_LOG(LogActor, Error, TEXT("Not implemented bozo"))
+	
 	//if item pick up
-	if (AItem* Item = Cast<AItem>(OtherActor->GetOwner()))
+	if (AItem* Item = Cast<AItem>(OtherActor))
 	{
-		
+		UE_LOG(LogActorComponent, Warning, TEXT("hit and item yays"));
 	}
 	//if door
 }

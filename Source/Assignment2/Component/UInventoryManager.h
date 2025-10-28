@@ -18,9 +18,6 @@ public:
 
 	void HandelDeath();
 
-	UPROPERTY(EditAnywhere)
-	class USphereComponent* InteractionSphere;
-
 	//TArray<Item*>/'
 	
 protected:

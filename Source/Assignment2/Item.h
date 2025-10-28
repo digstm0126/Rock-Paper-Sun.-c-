@@ -17,7 +17,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	class USphereComponent* InteractionSphere;
- 
+	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 	

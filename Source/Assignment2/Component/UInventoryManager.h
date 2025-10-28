@@ -17,7 +17,8 @@ public:
 	UInventoryManager();
 
 	void HandelDeath();
-	
+
+	UPROPERTY(EditAnywhere)
 	class USphereComponent* InteractionSphere;
 
 	//TArray<Item*>

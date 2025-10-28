@@ -15,8 +15,10 @@ public:
 	// Sets default values for this actor's properties
 	AItem();
 
+	UPROPERTY(EditAnywhere)
 	class USphereComponent* InteractionSphere;
-
+ 
+	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 	
 protected:

@@ -2,9 +2,12 @@
 
 
 #include "UInventoryManager.h"
+
+#include "Assignment2GameMode.h"
 #include "Item.h"
 #include "Components/SceneComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UInventoryManager::UInventoryManager()
@@ -74,6 +77,22 @@ void UInventoryManager::HandelIntegrationOverlap(UPrimitiveComponent* Overlapped
 	{
 		Item->DisableItem();
 		Items.Add(Item);
+		// Get the game mode
+		if (AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this))
+		{
+			// Cast it to our specific game mode
+			if (AAssignment2GameMode* AssignmentGameMode = Cast<AAssignment2GameMode>(GameMode))
+			{
+				// Send a basic message
+				FStringFormatNamedArguments Arguments;
+				Arguments.Add(TEXT("ITEMNAME"), FStringFormatArg(Item->GetItemName().GetPlainNameString()));
+				
+				FString NewMessage = FString::Format(TEXT("I just picked up {ITEMNAME}"), Arguments);
+				AssignmentGameMode->SendCharacterMessage(NewMessage);
+			}
+		}
+
+
 	}
 	//if door
 }

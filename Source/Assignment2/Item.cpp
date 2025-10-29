@@ -33,6 +33,11 @@ void AItem::DisableItem()
 }
 
 
+FName AItem::GetItemName()
+{
+	return ItemName;
+}
+
 // Called when the game starts or when spawned
 void AItem::BeginPlay()
 {

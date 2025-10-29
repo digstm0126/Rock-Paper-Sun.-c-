@@ -16,6 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	AItem();
 
+	UPROPERTY(EditAnywhere)
+	FName ItemName = FName("Default Name");
+	
 	void EnableItem();
 	void DisableItem();
 	
@@ -25,6 +28,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 
+	FName GetItemName();
 	
 protected:
 	// Called when the game starts or when spawned

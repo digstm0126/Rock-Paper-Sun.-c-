@@ -3,6 +3,7 @@
 
 #include "UInventoryManager.h"
 
+#include "ADoor.h"
 #include "Assignment2GameMode.h"
 #include "Item.h"
 #include "Components/SceneComponent.h"
@@ -91,10 +92,32 @@ void UInventoryManager::HandelIntegrationOverlap(UPrimitiveComponent* Overlapped
 				AssignmentGameMode->SendCharacterMessage(NewMessage);
 			}
 		}
-
-
 	}
 	//if door
+	else if (AADoor* Door = Cast<AADoor>(OtherActor))
+	{
+		if (!Door->IsLocked)
+		{
+			return;
+		}
+		
+		int ItemIndex = 0;
+		bool FoundKey = false;
+		int InventorySize = Items.Num();
+		while (ItemIndex < InventorySize && !FoundKey)
+		{
+			if (AItem* ItemToTest = Items[ItemIndex])
+			{
+				if (Door->TryKeyToUnlock(ItemToTest))
+				{
+					Items.Remove(ItemToTest);
+					ItemToTest->Destroy();
+					FoundKey = true;
+				}
+			}
+			ItemIndex++;
+		}
+	}
 }
 
 

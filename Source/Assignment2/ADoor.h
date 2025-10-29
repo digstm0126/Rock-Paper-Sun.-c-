@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Item.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Actor.h"
 #include "ADoor.generated.h"
@@ -30,12 +31,29 @@ public:
 	FRotator ClosedRotation;
 	UPROPERTY(EditAnywhere)
 	float DoorSpeed;
+
+	UPROPERTY(EditAnywhere)
+	AItem* KeyForDoor = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AItem> KeyToSpawn;
+
+	UFUNCTION(CallInEditor)
+	void LockDoor();
+	
+	//if KeyToTry is the right key Unlocks door and returns true. returns false if not unlocked.
+	bool TryKeyToUnlock(AItem* KeyToTry);
+	
+	UFUNCTION(CallInEditor)
+	void UnlockDoor();
+
+	UPROPERTY(EditAnywhere)
+	bool IsLocked = true;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	bool IsOpen = false;
-	bool IsLocked = false;
 
 	UFUNCTION()
 	void HandelDetectionOverlap(UPrimitiveComponent* OverlappedComponent,

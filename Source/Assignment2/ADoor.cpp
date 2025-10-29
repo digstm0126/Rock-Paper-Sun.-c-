@@ -4,6 +4,7 @@
 #include "ADoor.h"
 
 #include "VectorTypes.h"
+#include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
 
 
@@ -122,6 +123,16 @@ void AADoor::HandelDetectionOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	}
 	
 	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
+	{
+		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
+		{
+			IsOpen = true;
+			PrimaryActorTick.SetTickFunctionEnable(true);
+			UE_LOG(LogActor, Log, TEXT("Player opened Door"))
+		}
+	}
+
+	if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(OtherActor))
 	{
 		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
 		{

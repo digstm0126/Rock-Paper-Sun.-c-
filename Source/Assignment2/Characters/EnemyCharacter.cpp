@@ -74,6 +74,15 @@ float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
+bool AEnemyCharacter::IsInPersecute()
+{
+	if (ActivePlayer)
+	{
+		return true;
+	}
+	return false;
+}
+
 void AEnemyCharacter::SetUpItem()
 {
 	RightHandItem = CreateDefaultSubobject<UStaticMeshComponent>(FName("SwordMesh"));

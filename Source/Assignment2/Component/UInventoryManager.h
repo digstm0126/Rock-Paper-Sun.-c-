@@ -21,11 +21,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AItem*> Items = TArray<AItem*>(); 
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AItem> ItemToWin = nullptr;
+	
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	//whether this inventory can reserve a wining item and end the game
+	bool CanResaveWiningItem = false;
+	
 	UFUNCTION()
 	void HandelIntegrationOverlap(UPrimitiveComponent* OverlappedComponent,
 							AActor* OtherActor,

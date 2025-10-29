@@ -6,6 +6,7 @@
 #include "ADoor.h"
 #include "Assignment2GameMode.h"
 #include "Item.h"
+#include "Characters/PlayerCharacter.h"
 #include "Components/SceneComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -65,6 +66,13 @@ void UInventoryManager::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	if (ItemToWin)
+	{
+		if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+		{
+			CanResaveWiningItem = true;
+		}
+	}
 	
 	
 }
@@ -76,6 +84,17 @@ void UInventoryManager::HandelIntegrationOverlap(UPrimitiveComponent* Overlapped
 	//if item pick up
 	if (AItem* Item = Cast<AItem>(OtherActor))
 	{
+		if (CanResaveWiningItem && Item->GetClass() ==  ItemToWin)
+		{
+			//do win stuff
+			Item->DisableItem();
+			Items.Add(Item);
+			if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+			{
+				Player->EndGame();
+			}
+			return;
+		}
 		Item->DisableItem();
 		Items.Add(Item);
 		// Get the game mode

@@ -105,6 +105,35 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 	
 }
 
+void APlayerCharacter::EndGame()
+{
+	if (AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this))
+	{
+		// Cast it to our specific game mode
+		if (AAssignment2GameMode* AssignmentGameMode = Cast<AAssignment2GameMode>(GameMode))
+		{
+			// Send a basic message
+			FStringFormatNamedArguments Arguments;
+				
+			FString NewMessage = FString::Format(TEXT("Game Ending soon"), Arguments);
+			AssignmentGameMode->SendCharacterMessage(NewMessage);
+		}
+	}
+
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		FTimerManager& TimerManager = GameInstance->GetTimerManager();
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUObject(this, &APlayerCharacter::QuitGame);
+		TimerManager.SetTimer(QuitTimeHandler, TimerDelegate, TimeTillQuitAfterEnd, false);
+	}
+}
+
+void APlayerCharacter::QuitGame()
+{
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetLocalViewingPlayerController(), EQuitPreference::Quit, false);
+}
+
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {

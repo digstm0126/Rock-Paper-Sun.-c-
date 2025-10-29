@@ -67,8 +67,16 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<UClass*> AttackableActors;
+
+	UFUNCTION(CallInEditor)
+	void EndGame();
+
+	UPROPERTY(EditAnywhere)
+	float TimeTillQuitAfterEnd = 5;
 	
+	FTimerHandle QuitTimeHandler = FTimerHandle();
 private:
+	void QuitGame();
 
 	/**
 	* Listen to this sword's overlap events to deal damage to enemies.

@@ -12,7 +12,8 @@ AItem::AItem()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
 	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractableSphere"));
-	Mesh->SetGenerateOverlapEvents(false);
+	Mesh->SetSimulatePhysics(true);
+	Mesh->SetCollisionProfileName(FName("BlockAllDynamic"));
 	
 	Mesh->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	InteractionSphere->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);

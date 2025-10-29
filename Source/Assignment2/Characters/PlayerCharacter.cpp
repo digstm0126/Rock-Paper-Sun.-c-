@@ -97,11 +97,15 @@ void APlayerCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent,
 			DoDamage(DamageEvent);
 			
 			StopAttacking();
-			
+			return;
 		}
 	}
 	
 	//check if stagarable thing
+	if (StarringActors.Contains(OtherActor->GetClass()))
+	{
+		StopAttacking();
+	}
 	
 }
 

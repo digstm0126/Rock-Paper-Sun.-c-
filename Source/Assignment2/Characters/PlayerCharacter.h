@@ -68,6 +68,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<UClass*> AttackableActors;
 
+	UPROPERTY(EditAnywhere)
+	TArray<UClass*> StarringActors;
+
 	UFUNCTION(CallInEditor)
 	void EndGame();
 

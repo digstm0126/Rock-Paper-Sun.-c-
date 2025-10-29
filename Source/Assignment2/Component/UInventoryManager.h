@@ -19,7 +19,8 @@ public:
 
 	void HandelDeath();
 
-	TArray<AItem*> Items; 
+	UPROPERTY(VisibleAnywhere)
+	TArray<AItem*> Items = TArray<AItem*>(); 
 	
 protected:
 	// Called when the game starts

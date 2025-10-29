@@ -7,13 +7,6 @@
 #include "UObject/Class.h"
 #include "Item.generated.h"
 
-UENUM(BlueprintType)
-enum class EFItemType : uint8
-{
-	Key UMETA(DisplayName = "Key"),
-	Health UMETA(DisplayName = "Health")
-};
-
 UCLASS()
 class ASSIGNMENT2_API AItem : public AActor
 {
@@ -23,8 +16,8 @@ public:
 	// Sets default values for this actor's properties
 	AItem();
 
-	UPROPERTY(EditAnywhere)
-	EFItemType ItemType;
+	void EnableItem();
+	void DisableItem();
 	
 	UPROPERTY(EditAnywhere)
 	class USphereComponent* InteractionSphere;
@@ -32,7 +25,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* Mesh;
 
-	EFItemType GetItemType();
 	
 protected:
 	// Called when the game starts or when spawned

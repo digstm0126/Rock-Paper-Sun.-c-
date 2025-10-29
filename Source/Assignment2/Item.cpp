@@ -9,19 +9,28 @@ AItem::AItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Mesh"));
 	InteractionSphere = CreateDefaultSubobject<USphereComponent>(FName("InteractableSphere"));
+	Mesh->SetGenerateOverlapEvents(false);
 	
 	Mesh->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	InteractionSphere->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
- 
+	EnableItem();
 }
 
-EFItemType AItem::GetItemType()
+void AItem::EnableItem()
 {
-	return ItemType;
+	Mesh->SetVisibility(true);
+	InteractionSphere->SetGenerateOverlapEvents(true);
 }
+
+void AItem::DisableItem()
+{
+	Mesh->SetVisibility(false);
+	InteractionSphere->SetGenerateOverlapEvents(false);
+}
+
 
 // Called when the game starts or when spawned
 void AItem::BeginPlay()

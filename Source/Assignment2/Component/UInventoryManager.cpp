@@ -31,6 +31,27 @@ UInventoryManager::UInventoryManager()
 void UInventoryManager::HandelDeath()
 {
 	UE_LOG(LogActor, Warning, TEXT("handled death"))
+	
+	//unbind check
+	if (AActor* ActorToAttachTo = GetOwner())
+	{
+		UCapsuleComponent* CapsuleComponent = ActorToAttachTo->GetComponentByClass<UCapsuleComponent>();
+		if (ActorToAttachTo && CapsuleComponent)
+		{
+			CapsuleComponent->OnComponentBeginOverlap.RemoveDynamic(this, &UInventoryManager::HandelIntegrationOverlap);
+		}
+		else
+		{
+			UE_LOG(LogActorComponent, Error, TEXT("no collider to remove bind interactions from"))
+		}
+	}
+	
+	//drop all the items
+	for (AItem* Item : Items)
+	{
+		Item->SetActorLocation(GetOwner()->GetActorLocation());
+		Item->EnableItem();
+	}
 }
 
 
@@ -51,19 +72,8 @@ void UInventoryManager::HandelIntegrationOverlap(UPrimitiveComponent* Overlapped
 	//if item pick up
 	if (AItem* Item = Cast<AItem>(OtherActor))
 	{
-		UClass* ItemClass = Item->GetClass(); 
-		AItem* ItemToAdd = CreateDefaultSubobject<AItem>(FName("ItemToAdd"));
-		//if key
-		switch (Item->GetItemType())
-		{
-		case EFItemType::Key:
-			ItemToAdd->ItemType = EFItemType::Key;
-			break;
-		default:
-			UE_LOG(LogActorComponent, Error, TEXT("item dose not have an item type"))
-		} 
-		Items.Add(ItemToAdd);
-		Item->Destroy();
+		Item->DisableItem();
+		Items.Add(Item);
 	}
 	//if door
 }

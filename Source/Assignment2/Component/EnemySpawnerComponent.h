@@ -18,6 +18,9 @@ public:
 	UEnemySpawnerComponent();
 
 	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* SpawnEffect;
+	
+	UPROPERTY(EditAnywhere)
 	int MaxNumEnemy = 2;
 
 	UPROPERTY(EditAnywhere)

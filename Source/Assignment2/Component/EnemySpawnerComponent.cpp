@@ -3,6 +3,7 @@
 
 #include "EnemySpawnerComponent.h"
 
+#include "NiagaraFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -130,6 +131,8 @@ void UEnemySpawnerComponent::TrySpawnEnemy()
 		{
 			
 			SpawnedEnemy->OnDeath.AddUObject(this, &UEnemySpawnerComponent::HandelEnemyDeath);
+			UNiagaraFunctionLibrary::SpawnSystemAttached(SpawnEffect, SpawnedEnemy->GetRootComponent(), NAME_None, FVector(0,0,0), SpawnRotation, EAttachLocation::SnapToTarget, true);
+
 			CurrentNumEnemy++;
 			CurrentLifeTimeNumEnemy++;
 		}

@@ -6,8 +6,22 @@
 #include "PlayerCharacter.h"
 #include "Component/UHealthManagerComponent.h"
 #include "GameFramework/Character.h"
+#include "UObject/Class.h"
 #include "EnemyCharacter.generated.h"
 
+UENUM()
+enum class EEngagementBehaviour : uint8
+{
+	Pursue UMETA(DisplayName = "Pursue"),
+	None UMETA(DisplayName = "None")
+};
+
+UENUM()
+enum class EAttackingBehaviour : uint8
+{
+	Retreat UMETA(DisplayName = "Retreat"),
+	Attack UMETA(DisplayName = "Attack")
+};
 
 
 UCLASS()
@@ -20,8 +34,14 @@ public:
 	AEnemyCharacter();
 
 	DECLARE_MULTICAST_DELEGATE(FHandelDeath)
-
+	
 	FHandelDeath OnDeath;
+
+	UPROPERTY(EditAnywhere)
+	EEngagementBehaviour EngagementBehaviour = EEngagementBehaviour::Pursue;
+
+	UPROPERTY(EditAnywhere)
+	EAttackingBehaviour AttackingBehaviour = EAttackingBehaviour::Attack;
 	
 	// Bind to the Overlap and Endoverlap delegates of this component to run logic to go to the player
 	UPROPERTY(EditAnywhere)
@@ -84,6 +104,7 @@ protected:
 	bool CheckSightToActivePlayer();
 	
 	void HandelAttack();
+	void ChasePlayer();
 
 	bool LoopingAttack;
 
@@ -121,6 +142,17 @@ protected:
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* RightHandItem;
+
+	void DoAttackBehaviour();
+	void EndAttackBehaviour();
+
+	void DoEnageBehaviour();
+	void EndEnageBehaviour();
+	
+	void RetreatFromPlayer();
+
+	bool IsRetreating = false;
+	bool IsChasing = false;
 
 	
 public:

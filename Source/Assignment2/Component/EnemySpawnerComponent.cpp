@@ -123,11 +123,12 @@ void UEnemySpawnerComponent::TrySpawnEnemy()
 	
 	if (UWorld* World = GetWorld())
 	{
-		FVector SpawnLocation = GetOwner()->GetActorLocation();
+		FVector SpawnLocation = GetOwner()->GetActorLocation() + (ActivePlayer->GetActorLocation() - GetOwner()->GetActorLocation());
 		FRotator SpawnRotation = GetOwner()->GetActorRotation();
 		
 		if (AEnemyCharacter* SpawnedEnemy = Cast<AEnemyCharacter>(World->SpawnActor(EnemyToSpawn, &SpawnLocation, &SpawnRotation)))
 		{
+			
 			SpawnedEnemy->OnDeath.AddUObject(this, &UEnemySpawnerComponent::HandelEnemyDeath);
 			CurrentNumEnemy++;
 			CurrentLifeTimeNumEnemy++;

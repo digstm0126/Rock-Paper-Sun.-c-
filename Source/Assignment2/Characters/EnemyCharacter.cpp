@@ -194,29 +194,140 @@ void AEnemyCharacter::HandelAttack()
 }
 
 
-// Called every frame
-void AEnemyCharacter::Tick(float DeltaTime)
+void AEnemyCharacter::ChasePlayer()
 {
-	Super::Tick(DeltaTime);
-
 	if (!CheckSightToActivePlayer())
 	{
 		return;
 	}
 	
-	if (!IsAttacking())
+	if (!IsChasing)
 	{
-		//chase player
-		FVector Direction = ActivePlayer->GetActorLocation() - GetActorLocation();
-		if (CharacterMovementComponent)
-		{
-			CharacterMovementComponent->AddInputVector(Direction);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("CharacterMovementComponent is null"));
-		}
+		return;
 	}
+	if (IsAttacking())
+	{
+		return;
+	}
+	
+	FVector Direction = ActivePlayer->GetActorLocation() - GetActorLocation();
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->AddInputVector(Direction);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("CharacterMovementComponent is null"));
+	}
+	
+}
+
+void AEnemyCharacter::DoAttackBehaviour()
+{
+	switch (AttackingBehaviour)
+	{
+	case EAttackingBehaviour::Retreat:
+		IsRetreating = true;
+		break;
+	case EAttackingBehaviour::Attack:
+		if (UGameInstance* GameInstance = GetGameInstance())
+		{
+			FTimerManager& TimerManager = GameInstance->GetTimerManager();
+			FTimerDelegate TimerDelegate;
+			TimerDelegate.BindUObject(this, &AEnemyCharacter::HandelAttack);
+			TimerManager.SetTimer(AttackTimerHandle, TimerDelegate, AttackInterval, true);
+		}
+		HandelAttack();
+		UE_LOG(LogActor, Log, TEXT("Can Attack Player"))
+		break;
+	}
+}
+
+void AEnemyCharacter::EndAttackBehaviour()
+{
+	switch (AttackingBehaviour)
+	{
+	case EAttackingBehaviour::Retreat:
+		IsRetreating = false;
+		break;
+	case EAttackingBehaviour::Attack:
+		//removes timer
+		if (UGameInstance* GameInstance = GetGameInstance())
+		{
+			FTimerManager& TimerManager = GameInstance->GetTimerManager();
+			TimerManager.ClearTimer(AttackTimerHandle);
+		}
+
+		//stops attacking if attacking
+		if (IsAttacking())
+		{
+			StopAttacking();
+		}
+		
+		break;
+	}
+	
+}
+
+void AEnemyCharacter::DoEnageBehaviour()
+{
+	switch (EngagementBehaviour)
+	{
+	case EEngagementBehaviour::Pursue:
+		IsChasing = true;
+		break;
+	case EEngagementBehaviour::None:
+		break;
+	}
+}
+
+void AEnemyCharacter::EndEnageBehaviour()
+{
+	switch (EngagementBehaviour)
+	{
+	case EEngagementBehaviour::Pursue:
+		IsChasing = false;
+		break;
+	case EEngagementBehaviour::None:
+		break;
+	}
+}
+
+void AEnemyCharacter::RetreatFromPlayer()
+{
+	if (!CheckSightToActivePlayer())
+	{
+		return;
+	}
+	
+	//Retreat
+	if (!IsRetreating)
+	{
+		return;
+	}
+
+	//Retreating from player
+	FVector Direction = GetActorLocation() - ActivePlayer->GetActorLocation(); 
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->AddInputVector(Direction);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("CharacterMovementComponent is null"));
+	}
+	
+}
+
+// Called every frame
+void AEnemyCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	RetreatFromPlayer();
+	
+	ChasePlayer();
+	
 }
 
 // Called to bind functionality to input
@@ -236,8 +347,10 @@ void AEnemyCharacter::HandelStartSightOverlap(UPrimitiveComponent* OverlappedCom
 	{
 		if (UCapsuleComponent* Capsule = Cast<UCapsuleComponent>(OtherComp))
 		{
+			
 			ActivePlayer = Player;
-			UE_LOG(LogActor, Log, TEXT("found new player to chase"))
+			UE_LOG(LogActor, Log, TEXT("found new player"))
+			DoEnageBehaviour();
 		}
 	}
 }
@@ -258,6 +371,7 @@ void AEnemyCharacter::HandelEndSightOverlap(UPrimitiveComponent* OverlappedCompo
 		{
 			UE_LOG(LogActor, Log, TEXT("lost Player to chase"))
 			ActivePlayer = nullptr;
+			EndEnageBehaviour();
 		}
 	}
 }
@@ -273,15 +387,7 @@ void AEnemyCharacter::HandelStartAttackOverlap(UPrimitiveComponent* OverlappedCo
 	{
 		if (Cast<UCapsuleComponent>(OtherComp))
 		{
-			if (UGameInstance* GameInstance = GetGameInstance())
-			{
-				FTimerManager& TimerManager = GameInstance->GetTimerManager();
-				FTimerDelegate TimerDelegate;
-				TimerDelegate.BindUObject(this, &AEnemyCharacter::HandelAttack);
-				TimerManager.SetTimer(AttackTimerHandle, TimerDelegate, AttackInterval, true);
-			}
-			HandelAttack();
-			UE_LOG(LogActor, Log, TEXT("Can Attack Player"))
+			DoAttackBehaviour();	
 		}
 	}
 }
@@ -300,20 +406,7 @@ void AEnemyCharacter::HandelEndAttackOverlap(UPrimitiveComponent* OverlappedComp
 	{
 		if (Cast<UCapsuleComponent>(OtherComp))
 		{
-			//removes timer
-			if (UGameInstance* GameInstance = GetGameInstance())
-			{
-				FTimerManager& TimerManager = GameInstance->GetTimerManager();
-				TimerManager.ClearTimer(AttackTimerHandle);
-			}
-
-			//stops attacking if attacking
-			if (IsAttacking())
-			{
-				StopAttacking();
-			}
-			
-			UE_LOG(LogActor, Log, TEXT("lost Player to atack"))
+			EndAttackBehaviour();	
 		}
 	}
 }

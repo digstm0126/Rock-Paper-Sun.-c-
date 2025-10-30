@@ -29,6 +29,7 @@ void AAutomaticRoomCreation::BuildRooms()
 	{
 		FVector RoomSpawnLocation = (GetActorLocation() + StartLocation);
 		SpawnedPlayer = World->SpawnActor<AActor>(PlayerToSpawn, RoomSpawnLocation, StartRotation);
+		SpawnedPlayer->Tags.Add("RF_Transient");
 	}
 
 	if (SpawnedRooms.Num() >= 1)
@@ -47,6 +48,7 @@ void AAutomaticRoomCreation::BuildRooms()
 		{
 			FVector RoomSpawnLocation = (GetActorLocation() + StartLocation) + FVector(Room.RoomPosX, Room.RoomPosY,0);
 			AActor* SpawnedRoom = World->SpawnActor<AActor>(RoomToSpawn, RoomSpawnLocation, StartRotation);
+			SpawnedRoom->Tags.Add("RF_Transient");
 			SpawnedRooms.Add(SpawnedRoom);
 		}
 	}

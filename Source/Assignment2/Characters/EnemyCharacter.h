@@ -8,6 +8,8 @@
 #include "GameFramework/Character.h"
 #include "EnemyCharacter.generated.h"
 
+
+
 UCLASS()
 class ASSIGNMENT2_API AEnemyCharacter : public ACharacter
 {
@@ -17,6 +19,10 @@ public:
 	// Sets default values for this character's properties
 	AEnemyCharacter();
 
+	DECLARE_MULTICAST_DELEGATE(FHandelDeath)
+
+	FHandelDeath OnDeath;
+	
 	// Bind to the Overlap and Endoverlap delegates of this component to run logic to go to the player
 	UPROPERTY(EditAnywhere)
 	class USphereComponent* PlayerDetectionSphere;

@@ -14,13 +14,11 @@ UEnemySpawnerComponent::UEnemySpawnerComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
+	
 }
 
 
-void UEnemySpawnerComponent::HandelDeath()
-{
-	IsActive = false;
-}
+
 
 // Called when the game starts
 void UEnemySpawnerComponent::BeginPlay()
@@ -32,10 +30,21 @@ void UEnemySpawnerComponent::BeginPlay()
 	{
 		if (USphereComponent* PlayerDetectionSphere = ParentEnemy->PlayerDetectionSphere)
 		{
+			ParentEnemy->OnDeath.AddUObject(this, &UEnemySpawnerComponent::HandelDeath);
 			PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &UEnemySpawnerComponent::HandelStartSightOverlap);	
 			PlayerDetectionSphere->OnComponentEndOverlap.AddDynamic(this, &UEnemySpawnerComponent::HandelEndSightOverlap);
 		}
 	}
+}
+
+void UEnemySpawnerComponent::HandelEnemyDeath()
+{
+	CurrentNumEnemy--;
+}
+
+void UEnemySpawnerComponent::HandelDeath()
+{
+	IsActive = false;
 }
 
 void UEnemySpawnerComponent::HandelStartSightOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -59,6 +68,8 @@ void UEnemySpawnerComponent::HandelStartSightOverlap(UPrimitiveComponent* Overla
 		}
 	}
 }
+
+
 
 void UEnemySpawnerComponent::HandelEndSightOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -115,17 +126,13 @@ void UEnemySpawnerComponent::TrySpawnEnemy()
 		FVector SpawnLocation = GetOwner()->GetActorLocation();
 		FRotator SpawnRotation = GetOwner()->GetActorRotation();
 		
-		if (AActor* SpawnedEnemy = World->SpawnActor(EnemyToSpawn, &SpawnLocation, &SpawnRotation))
+		if (AEnemyCharacter* SpawnedEnemy = Cast<AEnemyCharacter>(World->SpawnActor(EnemyToSpawn, &SpawnLocation, &SpawnRotation)))
 		{
-			SpawnedEnemy.
+			SpawnedEnemy->OnDeath.AddUObject(this, &UEnemySpawnerComponent::HandelEnemyDeath);
 			CurrentNumEnemy++;
+			CurrentLifeTimeNumEnemy++;
 		}
-		
 	}	
-
-	
-
-	
 }
 
 

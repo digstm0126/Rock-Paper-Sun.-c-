@@ -87,6 +87,7 @@ bool AEnemyCharacter::IsInPersecute()
 
 void AEnemyCharacter::HandelDeath()
 {
+	OnDeath.Broadcast();
 	if (UInventoryManager* InventoryManager = GetOwner()->FindComponentByClass<UInventoryManager>())
 	{
 		InventoryManager->HandelDeath();

@@ -2,6 +2,8 @@
 
 
 #include "UHealthManagerComponent.h"
+
+#include "EnemySpawnerComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
@@ -59,15 +61,11 @@ void UHealthManagerComponent::HandelDeath()
 {
 	if (Health <= 0)
 	{
-		if (UInventoryManager* InventoryManager = GetOwner()->FindComponentByClass<UInventoryManager>())
-		{
-			InventoryManager->HandelDeath();
-		}
 		
 		IsAlive = false;
 		if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(GetOwner()))
 		{
-			Enemy->Ragdoll();
+			Enemy->HandelDeath();
 		}
 		if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
 		{

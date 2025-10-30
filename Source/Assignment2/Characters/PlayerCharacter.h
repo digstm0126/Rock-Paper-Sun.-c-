@@ -37,6 +37,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UHealthManagerComponent* HealthManger;
 
+	void HandelDeath();
 	/**
 	* Query the player to see if the attack animation is playing
 	*/

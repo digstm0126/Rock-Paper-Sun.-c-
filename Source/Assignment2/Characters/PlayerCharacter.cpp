@@ -6,6 +6,8 @@
 #include "Assignment2GameMode.h"
 #include "EnemyCharacter.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Component/EnemySpawnerComponent.h"
+#include "Component/UInventoryManager.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Kismet/GameplayStatics.h"
@@ -171,6 +173,20 @@ float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 	}
 	
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void APlayerCharacter::HandelDeath()
+{
+	if (UInventoryManager* InventoryManager = GetOwner()->FindComponentByClass<UInventoryManager>())
+	{
+		InventoryManager->HandelDeath();
+	}
+
+	if (UEnemySpawnerComponent* InventoryManager = GetOwner()->FindComponentByClass<UEnemySpawnerComponent>())
+	{
+		InventoryManager->HandelDeath();
+	}
+	
 }
 
 void APlayerCharacter::SetRightHeldItem(UStaticMeshComponent* NewMesh)

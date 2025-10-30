@@ -9,6 +9,8 @@
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "KismetTraceUtils.h"
+#include "Component/EnemySpawnerComponent.h"
+#include "Component/UInventoryManager.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/DamageEvents.h"
@@ -81,6 +83,21 @@ bool AEnemyCharacter::IsInPersecute()
 		return true;
 	}
 	return false;
+}
+
+void AEnemyCharacter::HandelDeath()
+{
+	if (UInventoryManager* InventoryManager = GetOwner()->FindComponentByClass<UInventoryManager>())
+	{
+		InventoryManager->HandelDeath();
+	}
+
+	if (UEnemySpawnerComponent* InventoryManager = GetOwner()->FindComponentByClass<UEnemySpawnerComponent>())
+	{
+		InventoryManager->HandelDeath();
+	}
+
+	Ragdoll();
 }
 
 void AEnemyCharacter::SetUpItem()

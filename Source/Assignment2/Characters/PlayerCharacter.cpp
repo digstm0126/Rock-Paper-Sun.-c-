@@ -186,7 +186,8 @@ void APlayerCharacter::HandelDeath()
 	{
 		InventoryManager->HandelDeath();
 	}
-	
+
+	Ragdoll();
 }
 
 void APlayerCharacter::SetRightHeldItem(UStaticMeshComponent* NewMesh)

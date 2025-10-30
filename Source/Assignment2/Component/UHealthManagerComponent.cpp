@@ -69,7 +69,7 @@ void UHealthManagerComponent::HandelDeath()
 		}
 		if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
 		{
-			Player->Ragdoll();
+			Player->HandelDeath();
 		}
 		UE_LOG(LogTemp, Warning, TEXT("This thing died bozo"));
 	}

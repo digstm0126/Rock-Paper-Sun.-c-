@@ -8,7 +8,21 @@ ARoom::ARoom()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	BuildRoom();
+}
 
+void ARoom::UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration)
+{
+	RoomConfiguration = NewRoomConfiguration;
+	BuildRoom();
+}
+
+void ARoom::BuildRoom()
+{
+	if (UWorld* World = GetWorld())
+	{
+		World->SpawnActor<AActor>(FloorRoomPiece, GetActorLocation(), GetActorRotation());
+	}
 }
 
 // Called when the game starts or when spawned

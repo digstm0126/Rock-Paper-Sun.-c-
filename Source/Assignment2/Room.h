@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "AutomaticRoomCreation.h"
 #include "Room.generated.h"
 
 UCLASS()
@@ -15,6 +16,22 @@ public:
 	// Sets default values for this actor's properties
 	ARoom();
 
+	UPROPERTY(EditAnywhere)
+	FRoomConfiguration RoomConfiguration;
+
+	void UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration);
+
+	void BuildRoom();
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> FloorRoomPiece;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ConerRoomPiece;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> WallRoomPiece;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> DoorHoleRoomPiece;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

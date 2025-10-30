@@ -22,6 +22,9 @@ struct FRoomConfiguration
 	UPROPERTY(EditAnywhere)
 	int RoomSizeY = 3;
 
+	UPROPERTY(EditAnywhere)
+	float CellSize = 500;
+
 	//room type
 	
 	//array of doors 

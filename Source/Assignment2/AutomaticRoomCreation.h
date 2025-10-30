@@ -49,7 +49,7 @@ public:
 	TSubclassOf<APlayerCharacter> PlayerToSpawn;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> RoomToSpawn;
+	TSubclassOf<ARoom> RoomToSpawn;
 
 	UPROPERTY(EditAnywhere)
 	FVector StartLocation = FVector(0,0,0);
@@ -61,7 +61,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	TArray<AActor*> SpawnedRooms;
+	TArray<ARoom*> SpawnedRooms;
 
 	AActor* SpawnedPlayer;
 	

@@ -3,6 +3,8 @@
 
 #include "AutomaticRoomCreation.h"
 
+#include "Room.h"
+
 // Sets default values
 AAutomaticRoomCreation::AAutomaticRoomCreation()
 {
@@ -47,9 +49,12 @@ void AAutomaticRoomCreation::BuildRooms()
 		if (UWorld* World = GetWorld())
 		{
 			FVector RoomSpawnLocation = (GetActorLocation() + StartLocation) + FVector(Room.RoomPosX, Room.RoomPosY,0);
-			AActor* SpawnedRoom = World->SpawnActor<AActor>(RoomToSpawn, RoomSpawnLocation, StartRotation);
-			SpawnedRoom->Tags.Add("RF_Transient");
-			SpawnedRooms.Add(SpawnedRoom);
+			if (ARoom* SpawnedRoom = Cast<ARoom>(World->SpawnActor<AActor>(RoomToSpawn, RoomSpawnLocation, StartRotation)))
+			{
+				SpawnedRoom->Tags.Add("RF_Transient");
+				SpawnedRoom->UpdateRoomConfiguration(Room);
+				SpawnedRooms.Add(SpawnedRoom);
+			}
 		}
 	}
 }

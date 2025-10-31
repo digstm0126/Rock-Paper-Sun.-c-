@@ -139,12 +139,20 @@ void ARoom::BuildRoom()
 
 	SpawnWallsLeftRight();
 
-	//buildDoors
-	if (IndexOfDoorNorth)
+	//corners
+	for (int CornerIndexX = 0; CornerIndexX < 2; ++CornerIndexX)
 	{
-		
+		for (int CornerIndexY = 0; CornerIndexY < 2; ++CornerIndexY)
+		{
+			FVector CornersLocation = GetActorLocation() + FVector((CornerIndexX * (RoomConfiguration.RoomSizeX - 1)) * RoomConfiguration.CellSize, (CornerIndexY * (RoomConfiguration.RoomSizeY - 1)) * RoomConfiguration.CellSize,0);
+			FRotator CornersRotation = GetActorRotation() + FRotator(0,90 * (CornerIndexX + CornerIndexY) ,0);
+			if (UWorld* World = GetWorld())
+			{
+				AActor* SpawnedPiece = World->SpawnActor<AActor>(ConerRoomPiece, CornersLocation, CornersRotation);
+				RoomPieces.Add(SpawnedPiece);
+			}
+		}
 	}
-	
 }
 
 // Called when the game starts or when spawned

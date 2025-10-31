@@ -8,7 +8,20 @@ ARoom::ARoom()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	BuildRoom();
+	
+}
+
+
+void ARoom::BeginDestroy()
+{
+	DestroyRoomPieces();
+	Super::BeginDestroy();
+}
+
+void ARoom::Destroyed()
+{
+	DestroyRoomPieces();
+	Super::Destroyed();
 }
 
 void ARoom::UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration)
@@ -19,10 +32,7 @@ void ARoom::UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration)
 
 void ARoom::BuildRoom()
 {
-	if (!RoomPieces.IsEmpty())
-	{
-		RoomPieces.Empty();
-	}
+	DestroyRoomPieces();
 	
 	if (UWorld* World = GetWorld())
 	{
@@ -36,6 +46,18 @@ void ARoom::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ARoom::DestroyRoomPieces()
+{
+	if (!RoomPieces.IsEmpty())
+	{
+		for (AActor* RoomPiece : RoomPieces)
+		{
+			RoomPiece->Destroy();
+		}
+		RoomPieces.Empty();
+	}
 }
 
 // Called every frame

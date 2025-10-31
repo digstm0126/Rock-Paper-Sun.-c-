@@ -41,6 +41,11 @@ public:
 	// Sets default values for this actor's properties
 	AAutomaticRoomCreation();
 
+	virtual void BeginDestroy() override;
+
+	virtual void Destroyed() override;
+	
+
 	// TArray of URoomConfigurations
 	UPROPERTY(EditAnywhere)
 	TArray<FRoomConfiguration> Rooms;
@@ -60,6 +65,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void DestroySpawnedRooms();
 
 	TArray<AActor*> SpawnedRooms;
 

@@ -16,6 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	ARoom();
 
+	virtual void BeginDestroy() override;
+	virtual void Destroyed() override; 
+
 	UPROPERTY(EditAnywhere)
 	FRoomConfiguration RoomConfiguration;
 
@@ -36,7 +39,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	TArray<AActor*> RoomPieces; 
+	TArray<AActor*> RoomPieces;
+
+	void DestroyRoomPieces();
 
 public:	
 	// Called every frame

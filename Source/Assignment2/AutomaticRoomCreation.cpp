@@ -10,8 +10,19 @@ AAutomaticRoomCreation::AAutomaticRoomCreation()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+}
 
-	BuildRooms();
+void AAutomaticRoomCreation::BeginDestroy()
+{
+	DestroySpawnedRooms();
+	Super::BeginDestroy();
+}
+
+void AAutomaticRoomCreation::Destroyed()
+{
+	DestroySpawnedRooms();
+	Super::Destroyed();
 }
 
 // Called when the game starts or when spawned
@@ -19,6 +30,26 @@ void AAutomaticRoomCreation::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void AAutomaticRoomCreation::DestroySpawnedRooms()
+{
+	if (!SpawnedRooms.IsEmpty())
+	{
+		for (AActor* SpawnedRoom : SpawnedRooms)
+		{
+			if (ARoom* Room = Cast<ARoom>(SpawnedRoom))
+			{
+				Room->Destroy();
+			}
+			else
+			{
+				UE_LOG(LogActor, Error, TEXT("item in SpawnedRooms is not a ARoom"))
+				SpawnedRoom->Destroy();
+			}
+		}
+		SpawnedRooms.Empty();
+	}
 }
 
 void AAutomaticRoomCreation::BuildRooms()
@@ -34,10 +65,7 @@ void AAutomaticRoomCreation::BuildRooms()
 		SpawnedPlayer->Tags.Add("RF_Transient");
 	}
 
-	if (!SpawnedRooms.IsEmpty())
-	{
-		SpawnedRooms.Empty();
-	}
+	DestroySpawnedRooms();
 	
 	if (!RoomToSpawn)
 	{

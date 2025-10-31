@@ -7,6 +7,27 @@
 #include "GameFramework/Actor.h"
 #include "AutomaticRoomCreation.generated.h"
 
+UENUM()
+enum class ECardinalDirection
+{
+	North,
+	East,
+	South,
+	West
+};
+
+USTRUCT()
+struct FDoorConfiguration
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	ECardinalDirection WallSide;
+
+	UPROPERTY(EditAnywhere)
+	int StepsAlongWall = 1;
+	
+};
 
 USTRUCT()
 struct FRoomConfiguration
@@ -27,8 +48,8 @@ struct FRoomConfiguration
 
 	//room type
 	
-	//array of doors 
-	//TArray<>
+	UPROPERTY(EditAnywhere)
+	TArray<FDoorConfiguration> Doors;
 	
 };
 

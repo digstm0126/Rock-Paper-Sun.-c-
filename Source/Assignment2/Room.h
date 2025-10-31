@@ -24,6 +24,7 @@ public:
 
 	void UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration);
 
+
 	void BuildRoom();
 
 	UPROPERTY(EditAnywhere)
@@ -42,6 +43,16 @@ protected:
 	TArray<AActor*> RoomPieces;
 
 	void DestroyRoomPieces();
+
+	void SpawnWallsTopBottom();
+	bool CheckAndSpawnDoor(FRotator Rotation, FVector Location,
+	                       ECardinalDirection CurrentWallSide, int CurrentWallIndex);
+	void SpawnWallsLeftRight();
+
+	int IndexOfDoorNorth = 0;
+	int IndexOfDoorEast = 0;
+	int IndexOfDoorSouth = 0;
+	int IndexOfDoorWest = 0;
 
 public:	
 	// Called every frame

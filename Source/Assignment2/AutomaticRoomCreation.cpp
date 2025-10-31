@@ -34,7 +34,7 @@ void AAutomaticRoomCreation::BuildRooms()
 		SpawnedPlayer->Tags.Add("RF_Transient");
 	}
 
-	if (SpawnedRooms.Num() >= 1)
+	if (!SpawnedRooms.IsEmpty())
 	{
 		SpawnedRooms.Empty();
 	}
@@ -48,12 +48,16 @@ void AAutomaticRoomCreation::BuildRooms()
 	{
 		if (UWorld* World = GetWorld())
 		{
-			FVector RoomSpawnLocation = (GetActorLocation() + StartLocation) + FVector(Room.RoomPosX, Room.RoomPosY,0);
+			FVector RoomSpawnLocation = (GetActorLocation() + StartLocation) + FVector(Room.RoomPosX * Room.CellSize, Room.RoomPosY * Room.CellSize,0);
 			if (ARoom* SpawnedRoom = Cast<ARoom>(World->SpawnActor<AActor>(RoomToSpawn, RoomSpawnLocation, StartRotation)))
 			{
 				SpawnedRoom->Tags.Add("RF_Transient");
 				SpawnedRoom->UpdateRoomConfiguration(Room);
 				SpawnedRooms.Add(SpawnedRoom);
+			}
+			else
+			{
+				UE_LOG(LogActor, Error, TEXT("spawned Actor not a ARoom"))
 			}
 		}
 	}

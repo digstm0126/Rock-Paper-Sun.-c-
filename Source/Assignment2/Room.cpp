@@ -19,9 +19,15 @@ void ARoom::UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration)
 
 void ARoom::BuildRoom()
 {
+	if (!RoomPieces.IsEmpty())
+	{
+		RoomPieces.Empty();
+	}
+	
 	if (UWorld* World = GetWorld())
 	{
-		World->SpawnActor<AActor>(FloorRoomPiece, GetActorLocation(), GetActorRotation());
+		AActor* SpawnedPiece = World->SpawnActor<AActor>(FloorRoomPiece, GetActorLocation(), GetActorRotation());
+		RoomPieces.Add(SpawnedPiece);
 	}
 }
 

@@ -144,6 +144,7 @@ void APlayerCharacter::QuitGame()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	OnDeath.AddUObject(this, &APlayerCharacter::HandelDeath);
 }
 
 // Called every frame
@@ -177,11 +178,6 @@ float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 
 void APlayerCharacter::HandelDeath()
 {
-	if (UInventoryManager* InventoryManager = GetOwner()->FindComponentByClass<UInventoryManager>())
-	{
-		InventoryManager->HandelDeath();
-	}
-	
 	IsAlive = false;
 	Ragdoll();
 }

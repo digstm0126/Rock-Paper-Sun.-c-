@@ -59,12 +59,12 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	OnDeath.AddUObject(this, &AEnemyCharacter::HandelDeath);
 }
 
 float AEnemyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
-	
 	if (HealthManger)
 	{
 		HealthManger->ReduceHealth(DamageEvent);
@@ -87,17 +87,6 @@ bool AEnemyCharacter::IsInPersecute()
 
 void AEnemyCharacter::HandelDeath()
 {
-	OnDeath.Broadcast();
-	if (UInventoryManager* InventoryManager = GetOwner()->FindComponentByClass<UInventoryManager>())
-	{
-		InventoryManager->HandelDeath();
-	}
-
-	if (UEnemySpawnerComponent* InventoryManager = GetOwner()->FindComponentByClass<UEnemySpawnerComponent>())
-	{
-		InventoryManager->HandelDeath();
-	}
-
 	Ragdoll();
 }
 
@@ -128,7 +117,7 @@ void AEnemyCharacter::HandelHit(UPrimitiveComponent* OverlappedComponent, AActor
 	{
 		return;
 	}
-
+	
 	
 	//checks if it's a Damageable Actor
 	if (OtherActor->CanBeDamaged())
@@ -178,6 +167,19 @@ bool AEnemyCharacter::CheckSightToActivePlayer()
 
 void AEnemyCharacter::HandelAttack()
 {
+	if (APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(ActivePlayer))
+	{
+		if (!PlayerCharacter->IsAlive)
+		{
+			ActivePlayer = nullptr;
+			if (UGameInstance* GameInstance = GetGameInstance())
+			{
+				FTimerManager& TimerManager = GameInstance->GetTimerManager();
+				TimerManager.ClearTimer(AttackTimerHandle);
+				return;
+			}
+		}
+	}
 	if (CheckSightToActivePlayer())
 	{
 		StartAttacking();

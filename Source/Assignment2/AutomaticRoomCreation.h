@@ -83,6 +83,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	FRotator StartRotation = FRotator(0,0,0);
 
+	UPROPERTY(EditAnywhere)
+	FVector PlayerSpawnOffSet = FVector(0,0,50);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -22,6 +22,10 @@ void AAutomaticRoomCreation::BeginDestroy()
 void AAutomaticRoomCreation::Destroyed()
 {
 	DestroySpawnedRooms();
+	if (SpawnedPlayer)
+	{
+		SpawnedPlayer->Destroy();
+	}
 	Super::Destroyed();
 }
 
@@ -29,7 +33,7 @@ void AAutomaticRoomCreation::Destroyed()
 void AAutomaticRoomCreation::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	BuildRooms();
 }
 
 void AAutomaticRoomCreation::DestroySpawnedRooms()
@@ -40,6 +44,7 @@ void AAutomaticRoomCreation::DestroySpawnedRooms()
 		{
 			if (ARoom* Room = Cast<ARoom>(SpawnedRoom))
 			{
+				Room->Destroyed();
 				Room->Destroy();
 			}
 			else
@@ -60,9 +65,9 @@ void AAutomaticRoomCreation::BuildRooms()
 	}
 	if (UWorld* World = GetWorld())
 	{
-		FVector RoomSpawnLocation = (GetActorLocation() + StartLocation);
+		FVector RoomSpawnLocation = (GetActorLocation() + StartLocation + PlayerSpawnOffSet);
 		SpawnedPlayer = World->SpawnActor<AActor>(PlayerToSpawn, RoomSpawnLocation, StartRotation);
-		SpawnedPlayer->Tags.Add("RF_Transient");
+		SpawnedPlayer->SetFlags(RF_Transient);
 	}
 
 	DestroySpawnedRooms();
@@ -79,7 +84,7 @@ void AAutomaticRoomCreation::BuildRooms()
 			FVector RoomSpawnLocation = (GetActorLocation() + StartLocation) + FVector(Room.RoomPosX * Room.CellSize, Room.RoomPosY * Room.CellSize,0);
 			if (ARoom* SpawnedRoom = Cast<ARoom>(World->SpawnActor<AActor>(RoomToSpawn, RoomSpawnLocation, StartRotation)))
 			{
-				SpawnedRoom->Tags.Add("RF_Transient");
+				SpawnedRoom->SetFlags(RF_Transient);
 				SpawnedRoom->UpdateRoomConfiguration(Room);
 				SpawnedRooms.Add(SpawnedRoom);
 			}

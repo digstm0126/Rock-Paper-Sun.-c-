@@ -49,6 +49,7 @@ protected:
 	                       ECardinalDirection CurrentWallSide, int CurrentWallIndex);
 	void SpawnWallsLeftRight();
 	void SpawnCorners();
+	void SpawnFloor();
 
 	int IndexOfDoorNorth = 0;
 	int IndexOfDoorEast = 0;

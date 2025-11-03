@@ -49,7 +49,7 @@ void ARoom::SpawnWallsTopBottom()
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, TopWallsRotation);
-				SpawnedPiece->Tags.Add("RF_Transient");
+				SpawnedPiece->SetFlags(RF_Transient);
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -66,7 +66,7 @@ void ARoom::SpawnWallsTopBottom()
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, BottomWallsRotation);
-				SpawnedPiece->Tags.Add("RF_Transient");
+				SpawnedPiece->SetFlags(RF_Transient);
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -85,7 +85,7 @@ bool ARoom::CheckAndSpawnDoor(FRotator Rotation, FVector Location, ECardinalDire
 			{
 				//Spawn Door
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(DoorHoleRoomPiece, Location, Rotation);
-				SpawnedPiece->Tags.Add("RF_Transient");
+				SpawnedPiece->SetFlags(RF_Transient);
 				RoomPieces.Add(SpawnedPiece);
 				FoundDoor = true;
 			}
@@ -112,7 +112,7 @@ void ARoom::SpawnWallsLeftRight()
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, LeftWallsRotation);
-				SpawnedPiece->Tags.Add("RF_Transient");
+				SpawnedPiece->SetFlags(RF_Transient);
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -129,7 +129,7 @@ void ARoom::SpawnWallsLeftRight()
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, RightWallsRotation);
-				SpawnedPiece->Tags.Add("RF_Transient");
+				SpawnedPiece->SetFlags(RF_Transient);
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -148,7 +148,27 @@ void ARoom::SpawnCorners()
 			if (UWorld* World = GetWorld())
 			{
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(ConerRoomPiece, CornersLocation, CornersRotation);
-				SpawnedPiece->Tags.Add("RF_Transient");
+				SpawnedPiece->SetFlags(RF_Transient);
+				RoomPieces.Add(SpawnedPiece);
+			}
+		}
+	}
+}
+
+void ARoom::SpawnFloor()
+{
+	//spawn Floors
+	if (UWorld* World = GetWorld())
+	{
+		FVector FloorWallsStartLocation = GetActorLocation() + FVector(RoomConfiguration.CellSize,RoomConfiguration.CellSize,0);
+		for ( int FloorIndexX = 0; FloorIndexX <= RoomConfiguration.RoomSizeX - 2; ++FloorIndexX)
+		{
+			for ( int FloorIndexY = 0; FloorIndexY < RoomConfiguration.RoomSizeY - 2; ++FloorIndexY)
+			{
+				FVector PieceLocation =  FloorWallsStartLocation + FVector(FloorIndexX * RoomConfiguration.CellSize, FloorIndexY * RoomConfiguration.CellSize, 0);
+				FRotator CornersRotation = GetActorRotation();
+				AActor* SpawnedPiece = World->SpawnActor<AActor>(FloorRoomPiece, PieceLocation, CornersRotation);
+				SpawnedPiece->SetFlags(RF_Transient);
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -164,31 +184,14 @@ void ARoom::BuildRoom()
 	SpawnWallsLeftRight();
 
 	SpawnCorners();
-
-
-	//spawn Floors
-	if (UWorld* World = GetWorld())
-	{
-		FVector FloorWallsStartLocation = GetActorLocation() + FVector(RoomConfiguration.CellSize,RoomConfiguration.CellSize,0);
-		for ( int FloorIndexX = 0; FloorIndexX <= RoomConfiguration.RoomSizeX - 2; ++FloorIndexX)
-		{
-			for ( int FloorIndexY = 0; FloorIndexY < RoomConfiguration.RoomSizeY - 2; ++FloorIndexY)
-			{
-				FVector PieceLocation =  FloorWallsStartLocation + FVector(FloorIndexX * RoomConfiguration.CellSize, FloorIndexY * RoomConfiguration.CellSize, 0);
-				FRotator CornersRotation = GetActorRotation();
-				AActor* SpawnedPiece = World->SpawnActor<AActor>(FloorRoomPiece, PieceLocation, CornersRotation);
-				SpawnedPiece->Tags.Add("RF_Transient");
-				RoomPieces.Add(SpawnedPiece);
-			}
-		}
-	}
+	
+	SpawnFloor();
 }
 
 // Called when the game starts or when spawned
 void ARoom::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void ARoom::DestroyRoomPieces()

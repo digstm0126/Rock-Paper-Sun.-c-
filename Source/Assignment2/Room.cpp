@@ -27,6 +27,7 @@ void ARoom::Destroyed()
 void ARoom::UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration)
 {
 	RoomConfiguration = NewRoomConfiguration;
+	
 	BuildRoom();
 }
 

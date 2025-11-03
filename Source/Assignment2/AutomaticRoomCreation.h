@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RoomStyle.h"
 #include "Characters/PlayerCharacter.h"
 #include "GameFramework/Actor.h"
 #include "AutomaticRoomCreation.generated.h"
@@ -45,8 +46,9 @@ struct FRoomConfiguration
 
 	UPROPERTY(EditAnywhere)
 	float CellSize = 500;
-
-	//room type
+	
+	//UPROPERTY(EditAnywhere)
+	//TSubclassOf<RoomStyle> RoomType;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FDoorConfiguration> Doors;

@@ -19,6 +19,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* SpawnEffect;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* SpawnCircle;
 	
 	UPROPERTY(EditAnywhere)
 	int MaxNumEnemy = 2;

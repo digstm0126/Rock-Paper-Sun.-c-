@@ -49,6 +49,7 @@ void ARoom::SpawnWallsTopBottom()
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, TopWallsRotation);
+				SpawnedPiece->Tags.Add("RF_Transient");
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -65,6 +66,7 @@ void ARoom::SpawnWallsTopBottom()
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, BottomWallsRotation);
+				SpawnedPiece->Tags.Add("RF_Transient");
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -83,6 +85,7 @@ bool ARoom::CheckAndSpawnDoor(FRotator Rotation, FVector Location, ECardinalDire
 			{
 				//Spawn Door
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(DoorHoleRoomPiece, Location, Rotation);
+				SpawnedPiece->Tags.Add("RF_Transient");
 				RoomPieces.Add(SpawnedPiece);
 				FoundDoor = true;
 			}
@@ -103,12 +106,13 @@ void ARoom::SpawnWallsLeftRight()
 		
 		for (int WallIndexY = 0; WallIndexY < NumOfWallY; ++WallIndexY)
 		{
-			FVector PieceLocation =  LeftWallsStartLocation + FVector(WallIndexY * RoomConfiguration.CellSize, 0, 0);
+			FVector PieceLocation =  LeftWallsStartLocation + FVector(0, WallIndexY * RoomConfiguration.CellSize, 0);
 
 			if (!CheckAndSpawnDoor(LeftWallsRotation, PieceLocation, ECardinalDirection::West, WallIndexY))
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, LeftWallsRotation);
+				SpawnedPiece->Tags.Add("RF_Transient");
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -125,6 +129,26 @@ void ARoom::SpawnWallsLeftRight()
 			{
 				//Spawn wall
 				AActor* SpawnedPiece = World->SpawnActor<AActor>(WallRoomPiece, PieceLocation, RightWallsRotation);
+				SpawnedPiece->Tags.Add("RF_Transient");
+				RoomPieces.Add(SpawnedPiece);
+			}
+		}
+	}
+}
+
+void ARoom::SpawnCorners()
+{
+	//corners
+	for (int CornerIndexX = 0; CornerIndexX < 2; ++CornerIndexX)
+	{
+		for (int CornerIndexY = 0; CornerIndexY < 2; ++CornerIndexY)
+		{
+			FVector CornersLocation = GetActorLocation() + FVector((CornerIndexX * (RoomConfiguration.RoomSizeX - 1)) * RoomConfiguration.CellSize, (CornerIndexY * (RoomConfiguration.RoomSizeY - 1)) * RoomConfiguration.CellSize,0);
+			FRotator CornersRotation = GetActorRotation() + FRotator(0, (CornerIndexX ? 90 : 0) + ((CornerIndexX ? -1 : 1) * (CornerIndexY * -90)),0);
+			if (UWorld* World = GetWorld())
+			{
+				AActor* SpawnedPiece = World->SpawnActor<AActor>(ConerRoomPiece, CornersLocation, CornersRotation);
+				SpawnedPiece->Tags.Add("RF_Transient");
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}
@@ -139,16 +163,21 @@ void ARoom::BuildRoom()
 
 	SpawnWallsLeftRight();
 
-	//corners
-	for (int CornerIndexX = 0; CornerIndexX < 2; ++CornerIndexX)
+	SpawnCorners();
+
+
+	//spawn Floors
+	if (UWorld* World = GetWorld())
 	{
-		for (int CornerIndexY = 0; CornerIndexY < 2; ++CornerIndexY)
+		FVector FloorWallsStartLocation = GetActorLocation() + FVector(RoomConfiguration.CellSize,RoomConfiguration.CellSize,0);
+		for ( int FloorIndexX = 0; FloorIndexX <= RoomConfiguration.RoomSizeX - 2; ++FloorIndexX)
 		{
-			FVector CornersLocation = GetActorLocation() + FVector((CornerIndexX * (RoomConfiguration.RoomSizeX - 1)) * RoomConfiguration.CellSize, (CornerIndexY * (RoomConfiguration.RoomSizeY - 1)) * RoomConfiguration.CellSize,0);
-			FRotator CornersRotation = GetActorRotation() + FRotator(0,90 * (CornerIndexX + CornerIndexY) ,0);
-			if (UWorld* World = GetWorld())
+			for ( int FloorIndexY = 0; FloorIndexY < RoomConfiguration.RoomSizeY - 2; ++FloorIndexY)
 			{
-				AActor* SpawnedPiece = World->SpawnActor<AActor>(ConerRoomPiece, CornersLocation, CornersRotation);
+				FVector PieceLocation =  FloorWallsStartLocation + FVector(FloorIndexX * RoomConfiguration.CellSize, FloorIndexY * RoomConfiguration.CellSize, 0);
+				FRotator CornersRotation = GetActorRotation();
+				AActor* SpawnedPiece = World->SpawnActor<AActor>(FloorRoomPiece, PieceLocation, CornersRotation);
+				SpawnedPiece->Tags.Add("RF_Transient");
 				RoomPieces.Add(SpawnedPiece);
 			}
 		}

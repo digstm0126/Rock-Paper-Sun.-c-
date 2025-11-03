@@ -132,7 +132,10 @@ void UEnemySpawnerComponent::TrySpawnEnemy()
 			
 			SpawnedEnemy->OnDeath.AddUObject(this, &UEnemySpawnerComponent::HandelEnemyDeath);
 			UNiagaraFunctionLibrary::SpawnSystemAttached(SpawnEffect, SpawnedEnemy->GetRootComponent(), NAME_None, FVector(0,0,0), SpawnRotation, EAttachLocation::SnapToTarget, true);
-
+			
+			UNiagaraFunctionLibrary::SpawnSystemAttached(SpawnCircle, GetOwner()->GetRootComponent(), NAME_None, FVector(0,0,0), SpawnRotation, EAttachLocation::SnapToTarget, true);
+			
+			
 			CurrentNumEnemy++;
 			CurrentLifeTimeNumEnemy++;
 		}

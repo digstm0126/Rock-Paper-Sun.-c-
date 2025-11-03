@@ -26,9 +26,9 @@ public:
 	float DetectionCapsuleRadius = 1;
 
 	UPROPERTY(EditAnywhere)
-	FRotator OpenRotation;
+	FRotator OpenRotation = FRotator(0,0,90);
 	UPROPERTY(EditAnywhere)
-	FRotator ClosedRotation;
+	FRotator ClosedRotation = FRotator(0,0,0);;
 	UPROPERTY(EditAnywhere)
 	float DoorSpeed;
 

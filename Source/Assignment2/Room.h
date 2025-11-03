@@ -48,6 +48,7 @@ protected:
 	bool CheckAndSpawnDoor(FRotator Rotation, FVector Location,
 	                       ECardinalDirection CurrentWallSide, int CurrentWallIndex);
 	void SpawnWallsLeftRight();
+	void SpawnCorners();
 
 	int IndexOfDoorNorth = 0;
 	int IndexOfDoorEast = 0;

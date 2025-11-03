@@ -10,7 +10,7 @@ AAutomaticRoomCreation::AAutomaticRoomCreation()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	BuildRooms();
 }
 
 void AAutomaticRoomCreation::BeginDestroy()
@@ -67,7 +67,10 @@ void AAutomaticRoomCreation::BuildRooms()
 	{
 		FVector RoomSpawnLocation = (GetActorLocation() + StartLocation + PlayerSpawnOffSet);
 		SpawnedPlayer = World->SpawnActor<AActor>(PlayerToSpawn, RoomSpawnLocation, StartRotation);
-		SpawnedPlayer->SetFlags(RF_Transient);
+		if (SpawnedPlayer)
+		{
+			SpawnedPlayer->SetFlags(RF_Transient);
+		}
 	}
 
 	DestroySpawnedRooms();

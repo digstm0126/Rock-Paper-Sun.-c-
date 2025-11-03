@@ -20,6 +20,24 @@ protected:
 	// Called when the game starts or when actor is spawned
 	virtual void BeginPlay() override;
 
+	void SetUpItem();
+	
+	void DoDamage(const FPointDamageEvent& DamageEvent);
+
+	void HandelDeath();
+	
+	void SetRightHeldItem(UStaticMeshComponent* NewMesh);
+
+	UFUNCTION()
+	void HandelHit(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult);
+
+	FTimerHandle QuitTimeHandler = FTimerHandle();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -28,6 +46,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	/**
 	* Interrupt / stop the attack animation if it is currently playing
 	*/
@@ -36,8 +55,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UHealthManagerComponent* HealthManger;
-
-	void HandelDeath();
+	
 	/**
 	* Query the player to see if the attack animation is playing
 	*/
@@ -49,23 +67,10 @@ public:
 	*/
 	UFUNCTION(BlueprintImplementableEvent)
 	void Ragdoll();
-	
-	void SetRightHeldItem(UStaticMeshComponent* NewMesh);
-
-	void SetUpItem();
-	void DoDamage(const FPointDamageEvent& DamageEvent);
 
 	UPROPERTY(EditAnywhere)
 	float Damage = 1.0f;
 	
-	UFUNCTION()
-	void HandelHit(UPrimitiveComponent* OverlappedComponent,
-	AActor* OtherActor,
-	UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex,
-	bool bFromSweep,
-	const FHitResult& SweepResult);
-
 	UPROPERTY(EditAnywhere)
 	TArray<UClass*> AttackableActors;
 
@@ -77,8 +82,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float TimeTillQuitAfterEnd = 5;
-	
-	FTimerHandle QuitTimeHandler = FTimerHandle();
+
+	UPROPERTY(EditAnywhere)
+	bool IsAlive = true;
+
 private:
 	void QuitGame();
 

@@ -181,12 +181,8 @@ void APlayerCharacter::HandelDeath()
 	{
 		InventoryManager->HandelDeath();
 	}
-
-	if (UEnemySpawnerComponent* InventoryManager = GetOwner()->FindComponentByClass<UEnemySpawnerComponent>())
-	{
-		InventoryManager->HandelDeath();
-	}
-
+	
+	IsAlive = false;
 	Ragdoll();
 }
 

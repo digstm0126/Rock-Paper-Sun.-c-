@@ -16,6 +16,10 @@ public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
+	DECLARE_MULTICAST_DELEGATE(FHandelDeath)
+	
+	FHandelDeath OnDeath;
+
 protected:
 	// Called when the game starts or when actor is spawned
 	virtual void BeginPlay() override;

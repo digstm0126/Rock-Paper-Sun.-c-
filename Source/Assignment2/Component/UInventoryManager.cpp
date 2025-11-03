@@ -6,6 +6,7 @@
 #include "ADoor.h"
 #include "Assignment2GameMode.h"
 #include "Item.h"
+#include "Characters/EnemyCharacter.h"
 #include "Characters/PlayerCharacter.h"
 #include "Components/SceneComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -71,10 +72,14 @@ void UInventoryManager::BeginPlay()
 		if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
 		{
 			CanResaveWiningItem = true;
+			Player->OnDeath.AddUObject(this, &UInventoryManager::HandelDeath);
+		}
+		else if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(GetOwner()))
+		{
+			CanResaveWiningItem = false;
+			Enemy->OnDeath.AddUObject(this, &UInventoryManager::HandelDeath);
 		}
 	}
-	
-	
 }
 
 void UInventoryManager::HandelIntegrationOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

@@ -43,7 +43,14 @@ void UHealthManagerComponent::ReduceHealth(const FDamageEvent& DamageEvent)
 	if (Health <= 0)
 	{
 		Health = 0;
-		HandelDeath();
+		if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+		{
+			Player->OnDeath.Broadcast();
+		}
+		else if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(GetOwner()))
+		{
+			Enemy->OnDeath.Broadcast();
+		}
 	}
 }
 
@@ -59,24 +66,8 @@ void UHealthManagerComponent::SetHealth(float NewHealth)
 
 void UHealthManagerComponent::HandelDeath()
 {
-	if (Health <= 0)
-	{
-		
-		IsAlive = false;
-		if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(GetOwner()))
-		{
-			Enemy->HandelDeath();
-		}
-		if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
-		{
-			Player->HandelDeath();
-		}
-		UE_LOG(LogTemp, Warning, TEXT("This thing died bozo"));
-	}
-	else
-	{
-		UE_LOG(LogCore, Error, TEXT("cant handel Death as this still has health"))
-	}
+	IsAlive = false;
+	
 }
 
 // Called when the game starts
@@ -85,7 +76,19 @@ void UHealthManagerComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwner()))
+	{
+		Player->OnDeath.AddUObject(this, &UHealthManagerComponent::HandelDeath);
+	}
+	else if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(GetOwner()))
+	{
+		Enemy->OnDeath.AddUObject(this, &UHealthManagerComponent::HandelDeath);
+	}
+	else
+	{
+		UE_LOG(LogActorComponent, Error, TEXT("Not attached to a desired actor"))	
+	}
 }
 
 

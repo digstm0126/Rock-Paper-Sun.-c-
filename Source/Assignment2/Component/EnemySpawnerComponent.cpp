@@ -52,7 +52,7 @@ void UEnemySpawnerComponent::HandelStartSightOverlap(UPrimitiveComponent* Overla
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
-	if (Cast<APlayerCharacter>(OtherActor))
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor))
 	{
 		if (Cast<UCapsuleComponent>(OtherComp))
 		{
@@ -104,6 +104,19 @@ void UEnemySpawnerComponent::TrySpawnEnemy()
 		return;
 	}
 
+	if (APlayerCharacter* Player = Cast<APlayerCharacter>(ActivePlayer))
+	{
+		if (!Player->IsAlive)
+		{
+			if (UGameInstance* GameInstance = GetOwner()->GetGameInstance())
+			{
+				FTimerManager& TimerManager = GameInstance->GetTimerManager();
+				TimerManager.ClearTimer(SpawnTimeHandler);
+			}
+			return;
+		}
+	}
+	
 	if (!ActivePlayer)
 	{
 		return;

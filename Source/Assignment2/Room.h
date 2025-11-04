@@ -23,10 +23,9 @@ public:
 	FRoomConfiguration RoomConfiguration;
 
 	void UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration);
-
-
+	
 	void BuildRoom();
-
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> FloorRoomPiece;
 	UPROPERTY(EditAnywhere)

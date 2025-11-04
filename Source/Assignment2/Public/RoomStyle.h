@@ -3,15 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "RoomStyle.generated.h"
 
-/**
- * 
- */
-class ASSIGNMENT2_API RoomStyle
+UCLASS()
+class ASSIGNMENT2_API ARoomStyle : public AActor
 {
-public:
-	RoomStyle();
-	~RoomStyle();
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	ARoomStyle();
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> FloorRoomPiece;
@@ -21,4 +23,13 @@ public:
 	TSubclassOf<AActor> WallRoomPiece;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> DoorHoleRoomPiece;
+	
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 };

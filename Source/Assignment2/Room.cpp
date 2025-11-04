@@ -27,6 +27,28 @@ void ARoom::Destroyed()
 void ARoom::UpdateRoomConfiguration(FRoomConfiguration NewRoomConfiguration)
 {
 	RoomConfiguration = NewRoomConfiguration;
+
+	//Copy room style
+	ARoomStyle* RoomStyle = Cast<ARoomStyle>(NewRoomConfiguration.RoomType.GetDefaultObject());
+	if (RoomStyle) 
+	{
+		if (RoomStyle->FloorRoomPiece)
+		{
+			FloorRoomPiece = RoomStyle->FloorRoomPiece;
+		}
+		if (RoomStyle->WallRoomPiece)
+		{
+			WallRoomPiece = RoomStyle->WallRoomPiece;
+		}
+		if (RoomStyle->DoorHoleRoomPiece)
+		{
+			DoorHoleRoomPiece = RoomStyle->DoorHoleRoomPiece;
+		}
+		if (RoomStyle->ConerRoomPiece)
+		{
+			ConerRoomPiece = RoomStyle->ConerRoomPiece;
+		}
+	}
 	
 	BuildRoom();
 }
@@ -179,14 +201,17 @@ void ARoom::SpawnFloor()
 void ARoom::BuildRoom()
 {
 	DestroyRoomPieces();
-	
-	SpawnWallsTopBottom();
 
-	SpawnWallsLeftRight();
+	if (GetWorld())
+	{
+		SpawnWallsTopBottom();
 
-	SpawnCorners();
-	
-	SpawnFloor();
+		SpawnWallsLeftRight();
+
+		SpawnCorners();
+		
+		SpawnFloor();
+	}
 }
 
 // Called when the game starts or when spawned

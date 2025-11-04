@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "RoomStyle.h"
 #include "Characters/PlayerCharacter.h"
 #include "GameFramework/Actor.h"
+#include "Public/RoomStyle.h"
 #include "AutomaticRoomCreation.generated.h"
 
 UENUM()
@@ -34,7 +34,8 @@ USTRUCT()
 struct FRoomConfiguration
 {
 	GENERATED_BODY()
-	
+
+public:
 	UPROPERTY(EditAnywhere)
 	int RoomPosX = 0;
 	UPROPERTY(EditAnywhere)
@@ -46,9 +47,9 @@ struct FRoomConfiguration
 
 	UPROPERTY(EditAnywhere)
 	float CellSize = 500;
-	
-	//UPROPERTY(EditAnywhere)
-	//TSubclassOf<RoomStyle> RoomType;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ARoomStyle> RoomType;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<FDoorConfiguration> Doors;
@@ -67,6 +68,8 @@ public:
 	virtual void BeginDestroy() override;
 
 	virtual void Destroyed() override;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
 	
 
 	// TArray of URoomConfigurations

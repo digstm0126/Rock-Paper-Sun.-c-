@@ -10,7 +10,6 @@ AAutomaticRoomCreation::AAutomaticRoomCreation()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	BuildRooms();
 }
 
 void AAutomaticRoomCreation::BeginDestroy()
@@ -29,11 +28,16 @@ void AAutomaticRoomCreation::Destroyed()
 	Super::Destroyed();
 }
 
+void AAutomaticRoomCreation::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	BuildRooms();
+}
+
 // Called when the game starts or when spawned
 void AAutomaticRoomCreation::BeginPlay()
 {
 	Super::BeginPlay();
-	BuildRooms();
 }
 
 void AAutomaticRoomCreation::DestroySpawnedRooms()

@@ -1,12 +1,28 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "RoomStyle.h"
 
-RoomStyle::RoomStyle()
+#include "Public/RoomStyle.h"
+
+// Sets default values
+ARoomStyle::ARoomStyle()
 {
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
+
 }
 
-RoomStyle::~RoomStyle()
+// Called when the game starts or when spawned
+void ARoomStyle::BeginPlay()
 {
+	Super::BeginPlay();
+	
 }
+
+// Called every frame
+void ARoomStyle::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
